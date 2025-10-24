@@ -171,7 +171,17 @@ potential_suspect <- person |>
 
 ```{r}
 #| label: wd-4-numeric-ex-1
+# Challenge 3, Question 1
 
+teacher_evals_compare <- teacher_evals |>
+  filter(question_no == 903 ) |>
+  mutate(
+			 SET_level = if_else(SET_score_avg >= 4, "excellent", "standard"),
+			 sen_level = case_when(seniority <= 4 ~ "junior",
+			                       seniority >= 5 & seniority <=8 ~ "senior",
+			                       seniority > 8 ~ "very senior")
+  ) |>
+  select(course_id, SET_level, sen_level)
 ```
 
 -   Numeric Example 2
