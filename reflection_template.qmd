@@ -62,6 +62,15 @@ military_spend <- read_xlsx("gov_spending_per_capita.xlsx",
 
 ```{r}
 #| label: wd-2-ex-1
+# Challenge 4, Question 2
+
+county_data <- ca_childcare |> 
+  filter(county_name %in% c("Los Angeles County", "Orange County", "San Diego County")) |> 
+  select(county_name, study_year, mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_toddler, mfcc_preschool) |>
+  pivot_longer(cols = starts_with(c("mc_","mfcc_")),
+               names_to = c("provider_type", "age_group"),
+               names_sep = "_",
+               values_to = "median_weekly_cost")
 
 ```
 
@@ -76,6 +85,14 @@ military_spend <- read_xlsx("gov_spending_per_capita.xlsx",
 
 ```{r}
 #| label: wd-2-ex-3
+# Challenge 4, Question 2
+county_data <- ca_childcare |> 
+  filter(county_name %in% c("Los Angeles County", "Orange County", "San Diego County")) |> 
+  select(county_name, study_year, mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_toddler, mfcc_preschool) |>
+  pivot_longer(cols = starts_with(c("mc_","mfcc_")),
+               names_to = c("provider_type", "age_group"),
+               names_sep = "_",
+               values_to = "median_weekly_cost")
 
 ```
 
@@ -582,7 +599,7 @@ The following assignments satisfy the above criteria:
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
-<!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
+<!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. (couple paragraphs (7-8 sentences)) -->
 
 ## Extending My Thinking
 
