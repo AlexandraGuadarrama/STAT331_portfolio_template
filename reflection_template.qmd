@@ -303,7 +303,13 @@ glimpse(suspect_interview)
 
 ```{r}
 #| label: wd-5-inner-ex-1
-
+person |>
+  inner_join(interview, join_by("id" == "person_id")) |>
+  filter(address_street_name =="Northwestern Dr") |> 
+  arrange(desc(address_number)) |> 
+  slice_head(n=1) |>
+  select(id, name, transcript) |>
+  pull(name)
 ```
 
 -   `inner_join()` Example 2
