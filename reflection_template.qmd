@@ -278,25 +278,35 @@ glimpse(potential_suspect)
 
 ```{r}
 #| label: wd-5-left-ex-1
-#Lab 5
-suspect_interview <- suspect |>
-  left_join(interview, join_by(person_id))
-glimpse(suspect_interview)
-
+# Lab 5
+# This would keep all potential_suspect rows and add interview data where there's a match
+final_suspect <- potential_suspect |>
+  left_join(interview, join_by(id == person_id)) |>
+  distinct(name, .keep_all = TRUE) |>
+  pull(name)
 ```
 
 -   `right_join()` Example 1
 
 ```{r}
 #| label: wd-5-right
-
+# Lab 5 
+# Code from the left join
+# This would keep all interview rows and add potential_suspect data where there's a match
+final_suspect <- potential_suspect |>
+  right_join(interview, join_by(id == person_id)) |>
+  distinct(name, .keep_all = TRUE) |>
+  pull(name)
 ```
 
 -   `left_join()` **or** `right_join()` Example 2
 
 ```{r}
 #| label: wd-5-left-right-ex-2
-
+#Lab 5
+suspect_interview <- suspect |>
+  left_join(interview, join_by(person_id))
+glimpse(suspect_interview)
 ```
 
 -   `inner_join()` Example 1
@@ -323,7 +333,7 @@ initial_suspects <- get_fit_now_member |>
   filter(check_in_date == "20180109", membership_status == "gold",
          str_detect(id, "48Z")) |>
   left_join(person, by = join_by(person_id == id) ) |>  
-  left_join(drivers_license, by = join_by(license_id == id))  
+  left_join(drivers_license, by = join_by(license_id == id))    
 
 ```
 
