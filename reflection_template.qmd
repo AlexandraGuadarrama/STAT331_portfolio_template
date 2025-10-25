@@ -278,6 +278,10 @@ glimpse(potential_suspect)
 
 ```{r}
 #| label: wd-5-left-ex-1
+#Lab 5
+suspect_interview <- suspect |>
+  left_join(interview, join_by(person_id))
+glimpse(suspect_interview)
 
 ```
 
