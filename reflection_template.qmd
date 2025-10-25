@@ -303,6 +303,7 @@ glimpse(suspect_interview)
 
 ```{r}
 #| label: wd-5-inner-ex-1
+# Lab 5
 person |>
   inner_join(interview, join_by("id" == "person_id")) |>
   filter(address_street_name =="Northwestern Dr") |> 
@@ -316,6 +317,13 @@ person |>
 
 ```{r}
 #| label: wd-5-inner-ex-2
+# Lab 5
+initial_suspects <- get_fit_now_member |>
+  inner_join(get_fit_now_check_in, join_by(id == membership_id)) |>  
+  filter(check_in_date == "20180109", membership_status == "gold",
+         str_detect(id, "48Z")) |>
+  left_join(person, by = join_by(person_id == id) ) |>  
+  left_join(drivers_license, by = join_by(license_id == id))  
 
 ```
 
