@@ -349,14 +349,26 @@ initial_suspects <- get_fit_now_member |>
 
 ```{r}
 #| label: wd-7-long
-
+# Lab 4, Question 7
+plot_ca_childcare <- ca_childcare |>
+  select(region, study_year, mc_infant, mc_toddler, mc_preschool) |>
+  pivot_longer(cols = starts_with("mc_"),
+               names_to = "age_group", 
+              values_to = "median_price") |>
 ```
 
 -   `pivot_wider()`
 
 ```{r}
 #| label: wd-7-wide
-
+# Lab 4, Question 5
+ca_childcare |> 
+  filter(study_year == 2008 | study_year == 2018) |>
+  group_by(region, study_year) |>
+  summarize(median_household_income = median(mhi_2018))  |> 
+  pivot_wider(names_from = study_year, 
+              values_from = median_household_income) |>
+  arrange(desc(2018))
 ```
 
 ## Reproducibility
