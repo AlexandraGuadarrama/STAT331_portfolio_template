@@ -473,8 +473,7 @@ rate_my_prof <- teacher_evals_clean |>
   filter(seniority == 1) |>
   group_by(teacher_id) |>
   summarize(avg_course_fail = mean(percent_failed_cur, na.rm = TRUE),
-            courses_taught = n_distinct(course_id),
-            .groups = "drop") |>
+            courses_taught = n_distinct(course_id), .groups = "drop") |>
   filter(avg_course_fail == min(avg_course_fail) | avg_course_fail == max(avg_course_fail))
 ```
 
@@ -494,7 +493,8 @@ rate_my_prof <- teacher_evals_clean |>
 ```{r}
 #| label: dvs-1-num
 # Lab 4, Question 8 
-# Wouldn’t it be nice to add $ signs to the y-axis too???
+# Comment: Wouldn’t it be nice to add $ signs to the y-axis too???
+
 ggplot(ca_childcare, 
        mapping = aes(x = mhi_2018, 
                      y = mc_infant)) +
@@ -611,7 +611,9 @@ plot_ca_childcare|>
 # I'd encourage using R packages to access color palettes for groups larger than four, 
 # since it gets hard to create colors that are easily differentiable. Plus, it is less work. :)
 
-# Revision: I manually created colors initally, but to make it more color friendly I used a template the viridis R package instead
+# Revision: I manually created colors originally, but to make it more color friendly
+# I used a template the viridis R package instead
+
 ggplot(data = surveys, 
        mapping = aes(x = species, 
                      y = weight, 
@@ -655,7 +657,12 @@ ggplot(ca_childcare,
 ```{r}
 #| label: dvs-2-ex-4
 # Lab 4, Question 7
-# Nice work changing the size of the x-axis text! Can you make this change to other aspects of the plot?
+# CommentL Nice work changing the size of the x-axis text! 
+# Can you make this change to other aspects of the plot?
+
+# Revision: I revised my lab to ensure that the y-axis was scaled from 
+# 100 to 500 and resized the legend length to match the plots. 
+# I also resized the axes and legend text.
 
 plot_ca_childcare|>
   ggplot(mapping = aes(x = study_year,
@@ -689,8 +696,12 @@ plot_ca_childcare|>
 ```{r}
 #| label: dvs-2-ex-5
 # Lab 4, Question 7
-# I strongly recommend against nested functions, as they are difficult for people to understand what your code is doing. 
+# Comment (from slides): I strongly recommend against nested functions, 
+# as they are difficult for people to understand what your code is doing. 
 # Having two lines is not less efficient and is more readable.
+
+# Revision: Instead of nesting everything, I separted them so the code is
+# easier to read and interpret
 
 plot_ca_childcare <- ca_childcare |>
   select(region, study_year, mc_infant, mc_toddler, mc_preschool) |>
@@ -755,8 +766,10 @@ plot_ca_childcare|>
 ```{r}
 #| label: dvs-3-1-ex-1
 # Lab 3 Challenge
-# I would encourage you to push yourself a bit more and try and recreate more of my plot. 
+# Comment: I would encourage you to push yourself a bit more and try 
+# and recreate more of my plot. 
 # Can you match my colors? The percentage labels?
+
 # Revision: manually added colors to recreate the plot 
 
 ggplot(data = teacher_evals_compare, 
@@ -782,8 +795,11 @@ ggplot(data = teacher_evals_compare,
 ```{r}
 #| label: dvs-3-1-ex-2
 # Lab 4, Question 7
-# Can you match my colors??? These are coming from a package and you will need to expand the color palette to get all 10 colors.
+# Comment: Can you match my colors??? These are coming from a package and 
+# you will need to expand the color palette to get all 10 colors.
 
+# Revision: I used a palette from the color brewer package and expanded it 
+# so the number of colors match the number of variables I have in my data
 
 colors <- colorRampPalette(brewer.pal(7, "Accent"))(10)
      
@@ -811,8 +827,9 @@ plot_ca_childcare|>
 ```{r}
 #| label: dvs-3-2
 # Lab 2 Challenge, Analysis Question 2
-# Originally did not have geom_text or currency label
+# Revision: Originally did not have geom_text or currency label
 # Added them to provide additional information and create a better visual 
+
 provider_labels <- c("mc" = "center based", "mfcc" = "home based")
 
 ggplot(data = county_data_summary, 
@@ -849,6 +866,17 @@ ggplot(data = county_data_summary,
 
 ```{r}
 #| label: dvs-4-summarize
+# Lab 3, Question 10
+# Comment: You should only call the filter() function once!
+
+teacher_evals_clean |>
+  filter(question_no == 901) |>
+  group_by(teacher_id) |>
+  summarize(
+    courses_reviewed = n_distinct(course_id),
+    average_rating = mean(SET_score_avg, na.rm = TRUE)) |>
+  filter(courses_reviewed >= 5,
+         average_rating == max(average_rating) | average_rating == min(average_rating))
 
 ```
 
@@ -856,7 +884,16 @@ ggplot(data = county_data_summary,
 
 ```{r}
 #| label: dvs-4-across
+# Lab 3, Question 5
+# Revision: Since as.character is applied to two different columns, 
+# I combined them into mutate() and used the across() function so 
+# they're all in one line of code, making it look neater
 
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter(no_participants > 10) |>
+  mutate(across(c(teacher_id, course_id), as.character)) |>
+  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -1059,3 +1096,5 @@ This is a peer review I wrote that I was proud of, which included some positive 
 One thing I’d note, when loading in the libraries and data, you don’t really need tidyr (as it’s already part of the tidyverse), so I would only include tidyverse and forcats.
 
 Also, for Question 7 (recreating the plot), I think making the font on the x-axis a bit smaller using theme(axis.text.x = element_text(size = \_ )) could help with the overlapping! Overall, you did great :)"
+
+During peer programming activities, I always tried to follow the developer and coder roles. If we were stumped on the code, we would look to our notes, course slides, printed cheat sheets, or raise our hands for guidance. I've also become more comfortable collaborating with my peers and explaining my thought process as a developer. Initially, I was worried about naming the wrong code or making a mistake, but I've learned that if I do make a mistake, my partner (the coder) will type out and run the code, allowing me to see what I did wrong and figure out my next steps can be to improve it. This mindset change has allowed me to feel more confident entering programming activities and excited to work with my peers.
