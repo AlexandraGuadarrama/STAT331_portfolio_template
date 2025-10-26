@@ -256,6 +256,7 @@ plot_ca_childcare <- ca_childcare |>
 
 ```{r}
 #| label: wd-4-date
+# Lab 5
 potential_suspect <- person |>
   left_join(drivers_license, join_by(license_id == id)) |>
   left_join(income, join_by("ssn")) |>
@@ -382,6 +383,8 @@ plot_ca_childcare <- ca_childcare |>
 # Can you give your column names better titles, 
 # so the reader knows what "2008" and "2018" represent? 
 # What are the values stored in these columns?
+
+#Revision: added an income_ prefix to add data context
 
 ca_childcare |> 
   filter(study_year %in% c(2008,2018)) |>
@@ -872,28 +875,24 @@ ggplot(data = county_data_summary,
 teacher_evals_clean |>
   filter(question_no == 901) |>
   group_by(teacher_id) |>
-  summarize(
-    courses_reviewed = n_distinct(course_id),
-    average_rating = mean(SET_score_avg, na.rm = TRUE)) |>
+  summarize(courses_reviewed = n_distinct(course_id),
+            average_rating = mean(SET_score_avg, na.rm = TRUE)) |>
   filter(courses_reviewed >= 5,
          average_rating == max(average_rating) | average_rating == min(average_rating))
-
 ```
 
 -   Example using `across()`
 
 ```{r}
 #| label: dvs-4-across
-# Lab 3, Question 5
-# Revision: Since as.character is applied to two different columns, 
-# I combined them into mutate() and used the across() function so 
-# they're all in one line of code, making it look neater
-
-teacher_evals_clean <- teacher_evals |>
-  rename(sex = gender) |>
-  filter(no_participants > 10) |>
-  mutate(across(c(teacher_id, course_id), as.character)) |>
-  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
+# Lab 3, Question 11
+# Modified: Used previous info from the data to incorporate across() 
+# and calcualte numerical sum
+# This would take the mean across of all variables 
+rate_my_prof <- teacher_evals_clean |>
+  filter(seniority == 1) |>
+  group_by(teacher_id) |>
+  summarize(accross(c(avg_course_fail, SET_score_avg, course_id), mean, na.rm=TRUE))
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -902,14 +901,40 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: dvs-5-1
-
+# Lab 5
+potential_suspect <- person |>
+  left_join(drivers_license, join_by(license_id == id)) |>
+  left_join(income, join_by("ssn")) |>
+  left_join(facebook_event_checkin, join_by(id == person_id)
+  ) |>
+  mutate(attend_date = ymd(date)
+  ) |>
+  filter(event_name == "SQL Symphony Concert",
+         month (attend_date) == 12,
+         year(attend_date) == 2017,
+         height %in% 65:67,
+         hair_color == "red",
+         car_make == "Tesla",
+         car_model == "Model S") |>
+  distinct(name, .keep_all = TRUE) |>
+  select(name, id, hair_color, height, gender, car_make, car_model, annual_income, event_name, attend_date) 
+glimpse(potential_suspect)
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dvs-5-2
+# Lab 3, Question 10
+# Comment: You should only call the filter() function once!
 
+teacher_evals_clean |>
+  filter(question_no == 901) |>
+  group_by(teacher_id) |>
+  summarize(courses_reviewed = n_distinct(course_id),
+            average_rating = mean(SET_score_avg, na.rm = TRUE)) |>
+  filter(courses_reviewed >= 5,
+         average_rating == max(average_rating) | average_rating == min(average_rating))
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
@@ -918,21 +943,54 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: dvs-6-ex-1
+# Lab 4, Question 5
+# Comments: I would recommend using the %in% operator instead of the or!
+# Notice that your table still has a grouping variable! 
+# Because you grouped by **two** variables, your first group was not dropped!
+# Can you give your column names better titles, 
+# so the reader knows what "2008" and "2018" represent? 
+# What are the values stored in these columns?
 
+#Revision: added an income_ prefix to add data context
+
+ca_childcare |> 
+  filter(study_year %in% c(2008,2018)) |>
+  group_by(region, study_year) |>
+  summarize(median_household_income = median(mhi_2018), .groups = "drop")  |> 
+  pivot_wider(names_from = study_year, 
+              values_from = median_household_income,
+              names_prefix = "income_")|>
+  arrange(desc(2018))
 ```
 
 -   I can modify the text in my table to be more readable (e.g., bold face for column headers)
 
 ```{r}
 #| label: dvs-6-ex-2
-
 ```
 
 -   I can arrange my table to have an intuitive ordering
 
 ```{r}
 #| label: dvs-6-ex-3
+# Lab 4, Question 5
+# Comments: I would recommend using the %in% operator instead of the or!
+# Notice that your table still has a grouping variable! 
+# Because you grouped by **two** variables, your first group was not dropped!
+# Can you give your column names better titles, 
+# so the reader knows what "2008" and "2018" represent? 
+# What are the values stored in these columns?
 
+#Revision: added an income_ prefix to add data context
+
+ca_childcare |> 
+  filter(study_year %in% c(2008,2018)) |>
+  group_by(region, study_year) |>
+  summarize(median_household_income = median(mhi_2018), .groups = "drop")  |> 
+  pivot_wider(names_from = study_year, 
+              values_from = median_household_income,
+              names_prefix = "income_")|>
+  arrange(desc(2018))
 ```
 
 **DVS-7: I show creativity in my tables.**
@@ -959,6 +1017,16 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-1-one-call
+# Lab 3, Question 5
+# Revision: Since as.character is applied to two different columns, 
+# I combined them into mutate() and used the across() function so 
+# they're all in one line of code, making it look neater
+
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter(no_participants > 10) |>
+  mutate(across(c(teacher_id, course_id), as.character)) |>
+  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
 
 ```
 
@@ -966,6 +1034,16 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-1-across
+# Lab 3, Question 5
+# Revision: Since as.character is applied to two different columns, 
+# I combined them into mutate() and used the across() function so 
+# they're all in one line of code, making it look neater
+
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter(no_participants > 10) |>
+  mutate(across(c(teacher_id, course_id), as.character)) |>
+  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
 
 ```
 
