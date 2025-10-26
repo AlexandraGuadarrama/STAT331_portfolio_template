@@ -469,13 +469,35 @@ rate_my_prof |>
 
 ```{r}
 #| label: dvs-1-num
-
+# Lab 4, Question 8 
+ggplot(ca_childcare, 
+       mapping = aes(x = mhi_2018, 
+                     y = mc_infant)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "Median Household Income", 
+       y = "Median Weekly Pricing ($)",
+       title = "Relationship Between Median Income and Infant Childcare Costs") +
+  scale_x_continuous(labels = label_currency(prefix="$")) +
+  scale_y_continuous(labels = label_currency(prefix="$")) +
+  theme_bw()
 ```
 
 -   At least one numeric variable and one categorical variable
 
 ```{r}
 #| label: dvs-2-num-cat
+# Lab 2, Question 8
+ggplot(data = surveys,
+       mapping = aes(x = species,
+                     y = weight)) +
+  geom_jitter(color= "yellow4", alpha=0.5)+
+  geom_boxplot(outliers = FALSE)+
+  labs(x = "Animal Species", 
+       y = "Weight (g)",
+       title = "Distribution of Weight Across Animal Species",
+       ) +
+  theme(axis.text.x = element_text(angle=45))
 
 ```
 
@@ -490,7 +512,25 @@ rate_my_prof |>
 
 ```{r}
 #| label: dvs-2-date
+# Lab 4, Question 6
 
+plot_ca_childcare|>
+  ggplot(mapping = aes(x = study_year,
+                       y = median_price,
+                       color = region)) +
+  geom_point(size = .5)+
+  geom_smooth(method = "loess", 
+              se = TRUE, 
+              linewidth = 0.6,
+              alpha = 0.4)+
+  scale_color_manual(values = colors)+
+  facet_wrap(~ age_group)+
+  scale_x_continuous(breaks = seq(2008,2018, by = 2))+
+  scale_y_continuous(limits = c(100,500))+
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year",
+       y = NULL,
+       color = "California Region")
 ```
 
 **DVS-2: I use plot modifications to make my visualization clear to the reader.**
@@ -499,7 +539,17 @@ rate_my_prof |>
 
 ```{r}
 #| label: dvs-2-ex-1
-
+# Lab 2, Question 16
+ggplot(data = surveys,
+       mapping = aes(x = species,
+                     y = weight)) +
+  geom_jitter(color= "steelblue", alpha=0.5)+
+  geom_boxplot(outliers = FALSE)+
+  labs(x = "Species",
+       y = "Weight (g)",
+       title = "Distribution of Animal Weight Across Species",
+       ) +
+  coord_flip()
 ```
 
 -   I can modify my colors to be accessible to anyone's eyes
@@ -520,13 +570,91 @@ rate_my_prof |>
 
 ```{r}
 #| label: dvs-2-ex-4
-
+# Lab 4, Question 7
+plot_ca_childcare|>
+  ggplot(mapping = aes(x = study_year,
+                       y = median_price,
+                       color = region)) +
+  geom_point(size = .5)+
+  geom_smooth(method = "loess", 
+              se = TRUE, 
+              linewidth = 0.6,
+              alpha = 0.4)+
+  scale_color_manual(values = colors)+
+  facet_wrap(~ age_group)+
+  scale_x_continuous(breaks = seq(2008,2018, by = 2))+
+  scale_y_continuous(limits = c(100,500))+
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year",
+       y = NULL,
+       color = "California Region")+
+  theme_bw()+
+  theme(aspect.ratio = 1,
+        axis.text.x = element_text(size = 5),
+        axis.text.y = element_text(size = 6),
+        axis.title.x = element_text(vjust = .4),
+        legend.key.size = unit(.35, units="cm"),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8))
 ```
 
 -   I can reorder my legend to align with the colors in my plot
 
 ```{r}
 #| label: dvs-2-ex-5
+# Lab 4, Questionn 7
+plot_ca_childcare <- ca_childcare |>
+  select(region, study_year, mc_infant, mc_toddler, mc_preschool) |>
+  pivot_longer(cols = starts_with("mc_"),
+               names_to = "age_group", 
+              values_to = "median_price") |>
+  mutate(age_group = fct_relevel(fct_recode(age_group,
+                                            "Infant" = "mc_infant",
+                                            "Toddler" = "mc_toddler",
+                                            "Preschool" = "mc_preschool"),
+                                 "Infant",
+                                 "Toddler",
+                                 "Preschool"),
+         region = fct_relevel(region,
+           "San Francisco Bay Area",
+           "Orange County",
+           "Los Angeles County",
+           "Northern San Joaquin Valley",
+           "Central Coast",
+           "Inland Empire",
+           "Superior California",
+           "Southern San Joaquin Valley",
+           "San Diego–Imperial",
+           "North Coast"))
+
+
+colors <- colorRampPalette(brewer.pal(7, "Accent"))(10)
+     
+plot_ca_childcare|>
+  ggplot(mapping = aes(x = study_year,
+                       y = median_price,
+                       color = region)) +
+  geom_point(size = .5)+
+  geom_smooth(method = "loess", 
+              se = TRUE, 
+              linewidth = 0.6,
+              alpha = 0.4)+
+  scale_color_manual(values = colors)+
+  facet_wrap(~ age_group)+
+  scale_x_continuous(breaks = seq(2008,2018, by = 2))+
+  scale_y_continuous(limits = c(100,500))+
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year",
+       y = NULL,
+       color = "California Region")+
+  theme_bw()+
+  theme(aspect.ratio = 1,
+        axis.text.x = element_text(size = 5),
+        axis.text.y = element_text(size = 6),
+        axis.title.x = element_text(vjust = .4),
+        legend.key.size = unit(.35, units="cm"),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8))
 
 ```
 
