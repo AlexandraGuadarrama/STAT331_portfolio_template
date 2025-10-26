@@ -280,8 +280,6 @@ plot_ca_childcare <- ca_childcare |>
            "Southern San Joaquin Valley",
            "San Diego–Imperial",
            "North Coast"))
-
-
 ```
 
 -   Character (example must use functions from **stringr**)
@@ -1027,6 +1025,7 @@ ca_childcare |>
 
 ```{r}
 #| label: dvs-6-ex-2
+
 ```
 
 -   I can arrange my table to have an intuitive ordering
