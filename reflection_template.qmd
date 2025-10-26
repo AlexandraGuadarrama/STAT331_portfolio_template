@@ -559,7 +559,6 @@ rate_my_prof <- teacher_evals_clean |>
 #| label: dvs-1-num
 # Lab 4, Question 8 
 # Comment: Wouldn’t it be nice to add $ signs to the y-axis too???
-
 ggplot(ca_childcare, 
        mapping = aes(x = mhi_2018, 
                      y = mc_infant)) +
@@ -603,7 +602,6 @@ ggplot(data = surveys,
 ```{r}
 #| label: dvs-2-date
 # Lab 4, Question 6
-
 plot_ca_childcare|>
   ggplot(mapping = aes(x = study_year,
                        y = median_price,
@@ -722,7 +720,7 @@ ggplot(ca_childcare,
 ```{r}
 #| label: dvs-2-ex-4
 # Lab 4, Question 7
-# CommentL Nice work changing the size of the x-axis text! 
+# Comment: Nice work changing the size of the x-axis text! 
 # Can you make this change to other aspects of the plot?
 
 # Revision: I revised my lab to ensure that the y-axis was scaled from 
@@ -842,7 +840,7 @@ ggplot(data = teacher_evals_compare,
                      fill = SET_level)) +
   geom_bar(stat = "count", 
            position = "fill") +
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = label_percent()) +
   scale_fill_manual(values = c("standard" = "#ab834a", "excellent" = "#a880ca")) +
   labs(
     title = "Evaluation of Teachers’ Use of Activities",
@@ -949,8 +947,8 @@ teacher_evals_clean |>
 #| label: dvs-4-across
 # Lab 3, Question 11
 # Modified: Used previous info from the data to incorporate across() 
-# and calcualte numerical sum
-# This would take the mean across of all variables 
+# and calcualte numerical summaries
+# Thus, this would take the mean across of all variables 
 rate_my_prof <- teacher_evals_clean |>
   filter(seniority == 1) |>
   group_by(teacher_id) |>
@@ -1181,6 +1179,7 @@ teacher_evals_clean <- teacher_evals |>
 
 # Revision: Went back to slides for Lab 3 and modified the code 
 # to use modern tools and more effective data wrangling verbs 
+
 teacher_evals_clean |>
 filter(if_any(.cols = everything(),
               .fns = ~ is.na(.x)))
