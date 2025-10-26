@@ -1034,16 +1034,6 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-1-across
-# Lab 3, Question 5
-# Revision: Since as.character is applied to two different columns, 
-# I combined them into mutate() and used the across() function so 
-# they're all in one line of code, making it look neater
-
-teacher_evals_clean <- teacher_evals |>
-  rename(sex = gender) |>
-  filter(no_participants > 10) |>
-  mutate(across(c(teacher_id, course_id), as.character)) |>
-  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
 
 ```
 
@@ -1077,13 +1067,22 @@ teacher_evals_clean <- teacher_evals |>
 
 ```
 
-**PE-3:I can use iteration to reduce repetition in my code.**
+**PE-3: I can use iteration to reduce repetition in my code.**
 
 -   using `across()`
 
 ```{r}
 #| label: pe-3-across
+# Lab 3, Question 5
+# Revision: Since as.character is applied to two different columns, 
+# I combined them into mutate() and used the across() function so 
+# they're all in one line of code, making it look neater
 
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter(no_participants > 10) |>
+  mutate(across(c(teacher_id, course_id), as.character)) |>
+  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
 ```
 
 -   using a `map()` function with **one** input (e.g., `map()`, `map_chr()`, `map_dbl()`, etc.)
@@ -1106,13 +1105,72 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-4-1
+# Lab 3, Question 8
+# Comment: I would love to see you using named argments!
 
+# Revision: Went back to slides for Lab 3 and modified the code 
+# to use modern tools and more effective data wrangling verbs 
+teacher_evals_clean |>
+filter(if_any(.cols = everything(),
+              .fns = ~ is.na(.x)))
 ```
 
 -   I can connect a data wrangling pipeline into a `ggplot()`
 
 ```{r}
 #| label: pe-4-2
+# Lab 4, Question 7
+# Revision: Compiled all code into one pipline, ensuring the use 
+# of modern tools and previous modifications
+
+ca_childcare |>
+  select(region, study_year, mc_infant, mc_toddler, mc_preschool) |>
+  pivot_longer(cols = starts_with("mc_"),
+               names_to = "age_group", 
+              values_to = "median_price") |>
+  mutate(age_group = case_when(age_group,
+                              "Infant" ~ "mc_infant",
+                              "Toddler" ~ "mc_toddler",
+                              "Preschool" ~ "mc_preschool"),
+        age_group = fct_relevel(age_group, 
+                                "Infant",
+                                "Toddler",
+                                "Preschool"),
+         region = fct_relevel(region,
+           "San Francisco Bay Area",
+           "Orange County",
+           "Los Angeles County",
+           "Northern San Joaquin Valley",
+           "Central Coast",
+           "Inland Empire",
+           "Superior California",
+           "Southern San Joaquin Valley",
+           "San Diego–Imperial",
+           "North Coast")) |>
+  ggplot(mapping = aes(x = study_year,
+                       y = median_price,
+                       color = region)) +
+  geom_point(size = .5)+
+  geom_smooth(method = "loess", 
+              se = TRUE, 
+              linewidth = 0.6,
+              alpha = 0.4)+
+  scale_color_manual(values = colorRampPalette(brewer.pal(7,"Accent"))(10))+
+  facet_wrap(~ age_group)+
+  scale_x_continuous(breaks = seq(2008,2018, by = 2))+
+  scale_y_continuous(limits = c(100,500))+
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year",
+       y = NULL,
+       color = "California Region")+
+  theme_bw()+
+  theme(aspect.ratio = 1,
+        axis.text.x = element_text(size = 5),
+        axis.text.y = element_text(size = 6),
+        axis.title.x = element_text(vjust = .4),
+        legend.key.size = unit(.35, units="cm"),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8))
 
 ```
 
