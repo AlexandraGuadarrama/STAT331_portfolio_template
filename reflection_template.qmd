@@ -57,33 +57,36 @@ military_spend <- read_xlsx("gov_spending_per_capita.xlsx",
 
 ```{r}
 #| label: wd-2-ex-1
-# Lab 4 Challenge, Question 2
-county_data <- ca_childcare |> 
-  filter(county_name %in% c("Los Angeles County", 
-                            "Orange County", 
-                            "San Diego County")) |> 
-  select(county_name, 
-         study_year, 
-         mc_infant, 
-         mc_toddler, 
-         mc_preschool, 
-         mfcc_infant, 
-         mfcc_toddler, 
-         mfcc_preschool) |>
-  pivot_longer(cols = starts_with(c("mc_","mfcc_")),
-               names_to = c("provider_type", "age_group"),
-               names_sep = "_",
-               values_to = "median_weekly_cost")
-
+# Lab 3, Question 5
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = gender) |>
+  filter(no_participants > 10) |>
+  mutate(across(c(teacher_id, course_id), as.character)) |>
+  select(course_id, 
+         teacher_id, 
+         question_no, 
+         no_participants, 
+         resp_share, 
+         SET_score_avg, 
+         percent_failed_cur, 
+         academic_degree, 
+         seniority, 
+         sex)
 ```
 
 -   Example removing specified columns
 
 ```{r}
 #| label: wd-2-ex-2
+# Lab 4 Challenge, Question 2
+# Modified previous code to show how to remove selected columns 
 county_data <- ca_childcare |> 
-  filter(county_name %in% c("Los Angeles County", "Orange County", "San Diego County")) |> 
-  select(county_name, study_year, mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_toddler, mfcc_preschool) |>
+  filter(county_name %in% c("Los Angeles County", 
+                            "Orange County", 
+                            "San Diego County")) |> 
+  select(-c(unr_16,
+            funr_16,
+            munr_16)) |> 
   pivot_longer(cols = starts_with(c("mc_","mfcc_")),
                names_to = c("provider_type", "age_group"),
                names_sep = "_",
@@ -94,14 +97,31 @@ county_data <- ca_childcare |>
 
 ```{r}
 #| label: wd-2-ex-3
-# Lab 4 Challenge, Question 2
-county_data <- ca_childcare |> 
-  filter(county_name %in% c("Los Angeles County", "Orange County", "San Diego County")) |> 
-  select(county_name, study_year, mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_toddler, mfcc_preschool) |>
-  pivot_longer(cols = starts_with(c("mc_","mfcc_")),
-               names_to = c("provider_type", "age_group"),
-               names_sep = "_",
-               values_to = "median_weekly_cost")
+# Lab 4, Question 7
+plot_ca_childcare <- ca_childcare |>
+  select(region, study_year, mc_infant, mc_toddler, mc_preschool) |>
+  pivot_longer(cols = starts_with("mc_"),
+               names_to = "age_group", 
+              values_to = "median_price") |>
+  mutate(age_group = fct_recode(age_group,
+                              "Infant" = "mc_infant",
+                              "Toddler" = "mc_toddler",
+                              "Preschool" = "mc_preschool"),
+        age_group = fct_relevel(age_group, 
+                                "Infant",
+                                "Toddler",
+                                "Preschool"),
+         region = fct_relevel(region,
+           "San Francisco Bay Area",
+           "Orange County",
+           "Los Angeles County",
+           "Northern San Joaquin Valley",
+           "Central Coast",
+           "Inland Empire",
+           "Superior California",
+           "Southern San Joaquin Valley",
+           "San Diego–Imperial",
+           "North Coast"))
 
 ```
 
@@ -111,14 +131,21 @@ county_data <- ca_childcare |>
 
 ```{r}
 #| label: wd-3-numeric-ex-1
-#Lab 3, Question 5
+# Lab 3, Question 5
 teacher_evals_clean <- teacher_evals |>
   rename(sex = gender) |>
   filter(no_participants > 10) |>
-  mutate(teacher_id = as.character(teacher_id),
-         course_id = as.character(course_id)) |>
-  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
-
+  mutate(across(c(teacher_id, course_id), as.character)) |>
+  select(course_id, 
+         teacher_id, 
+         question_no, 
+         no_participants, 
+         resp_share, 
+         SET_score_avg, 
+         percent_failed_cur, 
+         academic_degree, 
+         seniority, 
+         sex)
 ```
 
 -   Numeric Example 2
@@ -132,7 +159,6 @@ ca_childcare |>
   summarize(median_weekly_price = median(mc_infant)) |>
   arrange(desc(median_weekly_price)) |>
   slice_tail()
-
 ```
 
 -   Character Example 1 (any context)
@@ -181,7 +207,6 @@ potential_suspect <- person |>
 ```{r}
 #| label: wd-4-numeric-ex-1
 # Challenge 3, Question 1
-
 teacher_evals_compare <- teacher_evals |>
   filter(question_no == 903 ) |>
   mutate(SET_level = if_else(SET_score_avg >= 4, 
@@ -205,7 +230,7 @@ teacher_evals_compare <- teacher_evals |>
 ```{r}
 #| label: wd-4-factor-ex-1
 #Lab 4, Question 4
-ca_childcare <- ca_childcare |> 
+a_childcare <- ca_childcare |> 
   mutate(county_name = str_remove(county_name, " County")) |>
   mutate(region = fct_collapse(county_name,
       "Superior California" = superior_counties,
@@ -217,7 +242,7 @@ ca_childcare <- ca_childcare |>
       "Inland Empire" = inland_counties,
       "Los Angeles County" = la_county,
       "Orange County" = orange_county,
-      "San Diego–Imperial" = san_diego_imperial_counties))
+      "San Diego–Imperial" = san_diego_imperial_counties))            
 ```
 
 -   Factor Example 2 (reordering levels)
@@ -228,18 +253,22 @@ ca_childcare <- ca_childcare |>
 # Growing comment: Nice work reordering the facets, but we learned new tools this week that we can use instead. 
 # Specifically, the forcats package has some functions to handle this!
 
+# Revision: Instead of nesting everything, I separted them so the code is
+# easier to read and interpret
+
 plot_ca_childcare <- ca_childcare |>
   select(region, study_year, mc_infant, mc_toddler, mc_preschool) |>
   pivot_longer(cols = starts_with("mc_"),
                names_to = "age_group", 
               values_to = "median_price") |>
-  mutate(age_group = fct_relevel(fct_recode(age_group,
-                                            "Infant" = "mc_infant",
-                                            "Toddler" = "mc_toddler",
-                                            "Preschool" = "mc_preschool"),
-                                 "Infant",
-                                 "Toddler",
-                                 "Preschool"),
+  mutate(age_group = fct_recode(age_group,
+                              "Infant" = "mc_infant",
+                              "Toddler" = "mc_toddler",
+                              "Preschool" = "mc_preschool"),
+        age_group = fct_relevel(age_group, 
+                                "Infant",
+                                "Toddler",
+                                "Preschool"),
          region = fct_relevel(region,
            "San Francisco Bay Area",
            "Orange County",
@@ -251,6 +280,7 @@ plot_ca_childcare <- ca_childcare |>
            "Southern San Joaquin Valley",
            "San Diego–Imperial",
            "North Coast"))
+
 
 ```
 
@@ -282,7 +312,6 @@ potential_suspect <- person |>
          car_model == "Model S") |>
   distinct(name, .keep_all = TRUE) |>
   select(name, id, hair_color, height, gender, car_make, car_model, annual_income, event_name, attend_date) 
-glimpse(potential_suspect)
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
@@ -306,7 +335,8 @@ final_suspect <- potential_suspect |>
 #| label: wd-5-right
 # Lab 5 
 # Code from the left join
-# Portfolio revision: This would keep all interview rows and add potential_suspect data where there's a match
+# Portfolio revision: This would keep all interview rows 
+# and add potential_suspect data where there's a match
 final_suspect <- potential_suspect |>
   right_join(interview, join_by(id == person_id)) |>
   distinct(name, .keep_all = TRUE) |>
@@ -319,7 +349,8 @@ final_suspect <- potential_suspect |>
 #| label: wd-5-left-right-ex-2
 #Lab 5
 suspect_interview <- suspect |>
-  left_join(interview, join_by(person_id))
+  left_join(interview, 
+            join_by(person_id))
 glimpse(suspect_interview)
 ```
 
@@ -357,6 +388,13 @@ initial_suspects <- get_fit_now_member |>
 
 ```{r}
 #| label: wd-6-semi
+# Lab 5
+# Modified Lab 5 using a semi_join to pull interviews where
+# there could be a potential match
+person |>
+  semi_join(interview, 
+            by = join_by("id" == "person_id")) |>
+  filter(address_street_name =="Northwestern Dr") |>
 
 ```
 
@@ -364,7 +402,13 @@ initial_suspects <- get_fit_now_member |>
 
 ```{r}
 #| label: wd-6-anti
-
+# Lab 5
+# Modified Lab 5 code to demonstate how anti_join can be
+# used to pull names of suspects that have no matching interview
+final_suspect <- potential_suspect |>
+  anti_join(interview, 
+            by = c(id == person_id)) |>
+  pull(name)
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
@@ -420,6 +464,15 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: r-2-1
 # Lab 4, Question 7
+# Comments: Nice work reordering the facets, but we learned new tools this week that we can use instead. 
+# Specifically, the forcats package has some functions to handle this!
+# Can you reorder the colors in the legend so they appear in the same order as the lines in the plot? 
+# I am specifically looking for a tool that does the reordering for you, 
+# since doing the reordering by hand is not a robust programming practice!
+# Nice work changing the size of the x-axis text! 
+# Can you make this change to other aspects of the plot?
+# Can you match my colors??? These are coming from a package 
+# and you will need to expand the color palette to get all 10 colors.
 
 plot_ca_childcare|>
   ggplot(mapping = aes(x = study_year,
@@ -1091,7 +1144,16 @@ teacher_evals_clean <- teacher_evals |>
   rename(sex = gender) |>
   filter(no_participants > 10) |>
   mutate(across(c(teacher_id, course_id), as.character)) |>
-  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
+  select(course_id, 
+         teacher_id, 
+         question_no, 
+         no_participants, 
+         resp_share, 
+         SET_score_avg, 
+         percent_failed_cur, 
+         academic_degree, 
+         seniority, 
+         sex)
 ```
 
 -   using a `map()` function with **one** input (e.g., `map()`, `map_chr()`, `map_dbl()`, etc.)
