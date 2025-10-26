@@ -572,7 +572,7 @@ plot_ca_childcare|>
 
 ```{r}
 #| label: dvs-2-ex-2
-# Lab 2 Challenge, Color
+# Lab 2 Challenge, Medium
 ggplot(data = surveys, 
        mapping = aes(x = species, 
                      y = weight, 
@@ -707,6 +707,22 @@ plot_ca_childcare|>
 
 ```{r}
 #| label: dvs-3-1-ex-1
+# Lab 3 Challenge
+ggplot(data = teacher_evals_compare, 
+       mapping = aes(x = sen_level, 
+                     fill = SET_level)) +
+  geom_bar(stat = "count", 
+           position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("standard" = "#ab834a", "excellent" = "#a880ca")) +
+  labs(
+    title = "Evaluation of Teachers’ Use of Activities",
+    x = "Years of Experience",
+    y = "",
+    fill = "Evaluation Rating"
+  ) +
+  theme_bw() +
+  theme(legend.position = "top")
 
 ```
 
@@ -714,7 +730,34 @@ plot_ca_childcare|>
 
 ```{r}
 #| label: dvs-3-1-ex-2
-
+# Lab 4, Question 7
+colors <- colorRampPalette(brewer.pal(7, "Accent"))(10)
+     
+plot_ca_childcare|>
+  ggplot(mapping = aes(x = study_year,
+                       y = median_price,
+                       color = region)) +
+  geom_point(size = .5)+
+  geom_smooth(method = "loess", 
+              se = TRUE, 
+              linewidth = 0.6,
+              alpha = 0.4)+
+  scale_color_manual(values = colors)+
+  facet_wrap(~ age_group)+
+  scale_x_continuous(breaks = seq(2008,2018, by = 2))+
+  scale_y_continuous(limits = c(100,500))+
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year",
+       y = NULL,
+       color = "California Region")+
+  theme_bw()+
+  theme(aspect.ratio = 1,
+        axis.text.x = element_text(size = 5),
+        axis.text.y = element_text(size = 6),
+        axis.title.x = element_text(vjust = .4),
+        legend.key.size = unit(.35, units="cm"),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8))
 ```
 
 -   I can use annotations (e.g., `geom_text()`)
