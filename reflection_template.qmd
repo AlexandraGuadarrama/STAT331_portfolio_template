@@ -336,13 +336,11 @@ potential_suspect <- person |>
 
 ```{r}
 #| label: wd-5-left-ex-1
-# Lab 5
-# Portfolio revision: This would keep all potential_suspect rows 
-# and add interview data where there's a match
-final_suspect <- potential_suspect |>
-  left_join(interview, join_by(id == person_id)) |>
-  distinct(name, .keep_all = TRUE) |>
-  pull(name)
+# Lab 4, Question 2
+ca_childcare <- counties |>
+  filter(state_name == "California") |>
+  left_join(y = childcare_costs,
+            by = join_by("county_fips_code"))
 ```
 
 -   `right_join()` Example 1
