@@ -223,6 +223,10 @@ teacher_evals_compare <- teacher_evals |>
 
 ```{r}
 #| label: wd-4-numeric-ex-2
+# Challenge 7, Question 3
+fish <- fish |>
+  mutate(length_cm = replace_values_outside_bounds(length_cm, 5, 80),
+         weight = replace_values_outside_bounds(weight, 10, 4000))
 
 ```
 
@@ -287,7 +291,20 @@ plot_ca_childcare <- ca_childcare |>
 
 ```{r}
 #| label: wd-4-string
-
+# #Lab 4, Question 4
+ca_childcare <- ca_childcare |> 
+  mutate(county_name = str_remove(county_name, " County")) |>
+  mutate(region = fct_collapse(county_name,
+      "Superior California" = superior_counties,
+      "North Coast" = north_coast_counties,
+      "San Francisco Bay Area" = san_fran_counties,
+      "Northern San Joaquin Valley" = n_san_joaquin_counties,
+      "Central Coast" = central_coast_counties,
+      "Southern San Joaquin Valley" = s_san_joaquin_counties,
+      "Inland Empire" = inland_counties,
+      "Los Angeles County" = la_county,
+      "Orange County" = orange_county,
+      "San Diego–Imperial" = san_diego_imperial_counties)) 
 ```
 
 -   Date (example must use functions from **lubridate**)
@@ -918,6 +935,40 @@ ggplot(data = county_data_summary,
 
 ```{r}
 #| label: dvs-3-3
+
+ggplot(plot_ci, 
+       aes(x = estimate,
+           y = sim_id,
+           color = factor(cover))) +
+  theme_minimal()+
+  geom_point(aes(x = conf.low), size = .5) +
+  geom_point(aes(x = conf.high), size = .5) +
+  geom_segment(aes(x = conf.low, 
+                   xend = conf.high, 
+                   y = sim_id, 
+                   yend = sim_id)) +
+  geom_vline(xintercept = 0.5, 
+             linetype = "dashed") + 
+  annotate("text",
+           x = 0.5, 
+           y = max(plot_ci$sim_id), 
+           label = "Population Slope = 0.5", 
+           size = 3,
+           vjust = -0.5,
+           hjust = -0.1) +
+   theme(plot.subtitle = element_markdown(),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        legend.position = "none")+
+  labs(title = "95% Confidence Intervals of Regression for 100 Simulated Datasets",
+       subtitle = "CI's that **do not** include true slope are highlighted **<span style='color:red2;'>red</span>**",
+       x = "Slope Coefficient Estimates") +
+  scale_x_continuous(limits = c(-1, 2.5),
+                     breaks = seq(-1, 2.5, by = .5))+
+  scale_color_manual(values = c("red2","deepskyblue3"),
+                     labels = c("0","1"))
 
 ```
 
