@@ -1075,13 +1075,51 @@ teacher_evals_clean |>
 
 ```{r}
 #| label: dvs-6-ex-1
-
+# Lab 9, Question 8
+fish |>
+  map_int(.f = ~ sum(is.na(.x))) |>
+  enframe(name = "Variable", 
+          value = "NumberMissing") |>
+  gt() |>
+  cols_label(Variable = "Measurement Variable",
+            NumberMissing = "Missing Values") |>
+  tab_header(title = md("**Number of Missing Values for Fish Measurements**"),
+             subtitle = "Data Collected from 1989 to 2006 on the Blackfoot Fish River in Montana") |>
+  tab_style(style = cell_text(weight = "bold", 
+                              align = "center"),  
+            locations = cells_column_labels(everything())) |>
+  data_color(rows = NumberMissing == 0,
+             method = "numeric",
+             palette = "mediumaquamarine") |>
+  data_color(rows = NumberMissing > 0,
+             method = "numeric",
+             palette = "firebrick2") 
 ```
 
 -   I can modify the text in my table to be more readable (e.g., bold face for column headers)
 
 ```{r}
 #| label: dvs-6-ex-2
+# Lab 9, Question 8
+fish |>
+  map_int(.f = ~ sum(is.na(.x))) |>
+  enframe(name = "Variable", 
+          value = "NumberMissing") |>
+  gt() |>
+  cols_label(Variable = "Measurement Variable",
+            NumberMissing = "Missing Values") |>
+  tab_header(title = md("**Number of Missing Values for Fish Measurements**"),
+             subtitle = "Data Collected from 1989 to 2006 on the Blackfoot Fish River in Montana") |>
+  tab_style(style = cell_text(weight = "bold", 
+                              align = "center"),  
+            locations = cells_column_labels(everything())) |>
+  data_color(rows = NumberMissing == 0,
+             method = "numeric",
+             palette = "mediumaquamarine") |>
+  data_color(rows = NumberMissing > 0,
+             method = "numeric",
+             palette = "firebrick2") 
+  
 
 ```
 
@@ -1089,6 +1127,49 @@ teacher_evals_clean |>
 
 ```{r}
 #| label: dvs-6-ex-3
+# Lab 9, Question 6
+evals |>
+  distinct(teacher_id, .keep_all = TRUE) |>
+  select(academic_degree, seniority, sex) |>
+  
+  map_if(.p = is.character,
+         .f = as.factor) |> 
+  bind_cols() |>
+  
+  mutate(seniority = case_when(seniority <= 4 ~ "Junior",
+			                           seniority >= 5 & seniority <=8 ~ "Senior",
+			                           seniority > 8 ~ "Very Senior"),
+        academic_degree = fct_recode(academic_degree,
+                                      "No Degree" = "no_dgr",
+                                      "Masters" = "ma",
+                                      "Doctorate" = "dr",
+                                      "Tenured Professor" = "prof"),
+        sex = fct_recode(sex, 
+                         "Female" = "female",
+                         "Male" = "male")) |>
+  
+  pivot_longer(cols = c("academic_degree", "seniority", "sex"),
+               names_to = "variable",
+               values_to = "level") |>
+    mutate(variable = fct_recode(variable,
+                                 "Academic Degree" = "academic_degree",
+                                 "Seniority" = "seniority",
+                                 "Sex" = "sex")) |>
+  count(variable, level) |>
+  group_by(variable) |>
+  mutate(prop = n/sum(n)) |>
+  ungroup() |>
+  
+  gt(groupname_col = "variable", 
+     rowname_col = "level") |>
+  tab_style(style = cell_text(weight = "bold"),  
+            locations = cells_row_groups())|>
+  tab_style(style = cell_text(weight = "bold"),  
+            locations = cells_title(groups = "title")) |>
+  tab_header(title = "Demographics of Professors at the University of Poland, Warsaw in 2020") |>
+  cols_label(n = "Count",
+             prop = "Percent") |>
+  fmt_percent(columns = prop, decimals = 1) 
 
 ```
 
@@ -1117,6 +1198,7 @@ fish |>
   data_color(rows = NumberMissing > 0,
              method = "numeric",
              palette = "firebrick2") 
+
 ```
 
 -   I can modify the layout of my table to be more readable (e.g., `pivot_longer()` or `pivot_wider()`)
