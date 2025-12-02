@@ -379,10 +379,8 @@ ca_childcare <- counties |>
 person |>
   inner_join(interview, join_by("id" == "person_id")) |>
   filter(address_street_name =="Northwestern Dr") |> 
-  arrange(desc(address_number)) |> 
-  slice_head(n=1) |>
-  select(id, name, transcript) |>
-  pull(name)
+  slice_max(address_number, n = 1) |>
+  pull(transcript)
 ```
 
 -   `inner_join()` Example 2
@@ -408,9 +406,9 @@ initial_suspects <- get_fit_now_member |>
 # Lab 5
 # Modified Lab 5 using a semi_join to pull interviews where
 # there could be a potential match
-person |>
-  semi_join(interview, 
-            by = join_by("id" == "person_id")) |>
+interview |>
+  semi_join(person, 
+            by = join_by("person_id" == "id")) |>
   filter(address_street_name =="Northwestern Dr") |>
 ```
 
@@ -421,9 +419,9 @@ person |>
 # Lab 5
 # Modified Lab 5 code to demonstate how anti_join can be
 # used to pull names of suspects that have no matching interview
-final_suspect <- potential_suspect |>
-  anti_join(interview, 
-            by = c(id == person_id)) |>
+final_suspect <- interview |>
+  anti_join(potential_suspect, 
+            by = join_by("person_id" == "id")) |>
   pull(name)
 ```
 
@@ -592,17 +590,27 @@ ggplot(ca_childcare,
 
 ```{r}
 #| label: dvs-2-num-cat
-# Lab 2, Question 8
-ggplot(data = surveys,
-       mapping = aes(x = species,
-                     y = weight)) +
-  geom_jitter(color= "yellow4", alpha=0.5)+
-  geom_boxplot(outliers = FALSE)+
-  labs(x = "Animal Species", 
-       y = "Weight (g)",
-       title = "Distribution of Weight Across Animal Species",
-       ) +
-  theme(axis.text.x = element_text(angle=45))
+# Challenge 7, Question 5
+ggplot(data = fish, 
+       mapping = aes(x = factor(year), 
+                     y = condition_index, 
+                     fill = species)) +
+  geom_col(na.rm = TRUE) +
+  facet_wrap(~ species,
+             scales = "free_y") +
+  scale_fill_viridis(discrete = T, option = "plasma") +
+  labs(title = "Fish Condition Index Over Time by Species",
+       x = "Year",
+       y = "Condition Index") +
+  theme_bw() +
+  theme(plot.title = element_text(size = 15, 
+                                  face = "bold", 
+                                  hjust = 0.5),
+        axis.text.x = element_text(size = 7),
+        axis.text.y = element_text(size = 7),
+        strip.text = element_text(size = 12, 
+                                  face = "bold"),
+        legend.position = "none")
 
 ```
 
@@ -610,6 +618,24 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-2-cat
+#Challenge 3, Question 2
+
+ggplot(data = teacher_evals_compare, 
+       mapping = aes(x = sen_level, 
+                     fill = SET_level)) +
+  geom_bar(stat = "count", 
+           position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("standard" = "#ab834a", "excellent" = "#a880ca")) +
+  labs(
+    title = "Evaluation of Teachers’ Use of Activities",
+    x = "Years of Experience",
+    y = "",
+    fill = "Evaluation Rating"
+  ) +
+  theme_bw() +
+  theme(legend.position = "top")
+
 
 ```
 
