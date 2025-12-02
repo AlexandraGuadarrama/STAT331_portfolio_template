@@ -821,17 +821,7 @@ plot_ca_childcare <- ca_childcare |>
                                 "Infant",
                                 "Toddler",
                                 "Preschool"),
-         region = fct_relevel(region,
-           "San Francisco Bay Area",
-           "Orange County",
-           "Los Angeles County",
-           "Northern San Joaquin Valley",
-           "Central Coast",
-           "Inland Empire",
-           "Superior California",
-           "Southern San Joaquin Valley",
-           "San Diego–Imperial",
-           "North Coast"))
+        region = fct_reorder2(region, study_year, median_price))
 
 
 colors <- colorRampPalette(brewer.pal(7,"Accent"))(10)
