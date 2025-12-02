@@ -42,14 +42,13 @@ tax_rev <- read_csv('https://atheobold.github.io/groupworthy-data-science/labs/i
 
 ```{r}
 #| label: wd-1-xlsx
-# Practice Activity 4
+# Practice Activity Week 4
 library(readxl)
 military_spend <- read_xlsx("gov_spending_per_capita.xlsx",
                       sheet = "Share of Govt. spending" ,
                       skip  = 7,
                       n_max = 191,
-                      na = c("xxx", ". .", "..")
-                      )
+                      na = c("xxx", ". .", ".."))
   head(military_spend)
 ```
 
@@ -113,17 +112,7 @@ plot_ca_childcare <- ca_childcare |>
                                 "Infant",
                                 "Toddler",
                                 "Preschool"),
-         region = fct_relevel(region,
-           "San Francisco Bay Area",
-           "Orange County",
-           "Los Angeles County",
-           "Northern San Joaquin Valley",
-           "Central Coast",
-           "Inland Empire",
-           "Superior California",
-           "Southern San Joaquin Valley",
-           "San Diego–Imperial",
-           "North Coast"))
+         region = fct_reorder2(region, study_year, median_price))
 
 ```
 
@@ -469,7 +458,11 @@ ca_childcare |>
 
 The following assignments satisfy the above criteria:
 
--   I used examples from Lab 3 and Lab 4
+-   Lab 3
+-   Lab 4
+-   Challenge 7
+-   Lab 7
+-   Lab 10
 
 **R-2: I can write well documented and tidy code.**
 
@@ -477,34 +470,27 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: r-2-1
-# Lab 4, Question 7
-# Comments: Nice work reordering the facets, but we learned new tools this week that we can use instead. 
-# Specifically, the forcats package has some functions to handle this!
-# Can you reorder the colors in the legend so they appear in the same order as the lines in the plot? 
-# I am specifically looking for a tool that does the reordering for you, 
-# since doing the reordering by hand is not a robust programming practice!
-# Nice work changing the size of the x-axis text! 
-# Can you make this change to other aspects of the plot?
-# Can you match my colors??? These are coming from a package 
-# and you will need to expand the color palette to get all 10 colors.
-
-plot_ca_childcare|>
-  ggplot(mapping = aes(x = study_year,
-                       y = median_price,
-                       color = region)) +
-  geom_point(size = .5)+
-  geom_smooth(method = "loess", 
-              se = TRUE, 
-              linewidth = 0.6,
-              alpha = 0.4)+
-  scale_color_manual(values = colors)+
-  facet_wrap(~ age_group)+
-  scale_x_continuous(breaks = seq(2008,2018, by = 2))+
-  scale_y_continuous(limits = c(100,500))+
-  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
-       x = "Study Year",
-       y = NULL,
-       color = "California Region")
+# Challenge 7, Question 5
+ggplot(data = fish, 
+       mapping = aes(x = factor(year), 
+                     y = condition_index, 
+                     fill = species)) +
+  geom_col(na.rm = TRUE)+
+  facet_wrap(~ species,
+             scales = "free_y") +
+  scale_fill_viridis(discrete = T, option = "plasma") +
+  labs(title = "Fish Condition Index Over Time by Species",
+       x = "Year",
+       y = "Condition Index") +
+  theme_bw()+
+  theme(plot.title = element_text(size = 15, 
+                                  face = "bold", 
+                                  hjust = 0.5),
+        axis.text.x = element_text(size = 7),
+        axis.text.y = element_text(size = 7),
+        strip.text = element_text(size = 12, 
+                                  face = "bold"),
+        legend.position = "none")
 ```
 
 -   Example of **dplyr** pipeline
@@ -533,7 +519,17 @@ ca_childcare |>
 
 ```{r}
 #| label: r-2-3
+# Lab 10, Question 8
+randomBabies <- function(n = 4) {
+  baby_data <- tibble(baby = 1:n, 
+                      family = sample(1:n, replace = FALSE))
 
+double_baby <- baby_data |>
+  filter (baby == family ) |>
+  nrow() 
+
+return(double_baby)
+} 
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
@@ -560,6 +556,15 @@ rate_my_prof <- teacher_evals_clean |>
 
 ```{r}
 #| label: r-3-function-stops
+#Lab 7, Question 7
+rescale_01 <- function(x) {
+  
+  if(!is.numeric(x)) {
+    stop("Please provide a numeric input for the x argument.") }
+  if(length(x) <= 1) {
+     stop("Please provide an input vector length greater than 1.") }
+  rng <- range(x, na.rm = TRUE)
+         (x - rng[1]) / (rng[2] - rng[1]) }
 
 ```
 
@@ -936,7 +941,7 @@ ggplot(data = county_data_summary,
                 position = position_dodge(0.9),
                 size = 1.7,
                 vjust = 0.5,
-                accuracy = 1)+
+                accuracy = 1) +
       facet_grid(provider_type ~ age_group,
                 labeller = labeller(provider_type = provider_labels)) +
       labs(title = "Average Weekly Childcare Cost by County and Age Group",
@@ -944,7 +949,7 @@ ggplot(data = county_data_summary,
            y = "Mean Weekly Cost ($)",
            fill = "County") +
       theme_bw() +
-      theme(axis.text.x = element_blank())+
+      theme(axis.text.x = element_blank()) +
       scale_y_continuous(labels = label_currency(prefix = "$"))
 ```
 
@@ -952,7 +957,7 @@ ggplot(data = county_data_summary,
 
 ```{r}
 #| label: dvs-3-3
-
+# Lab 10, Question 13
 ggplot(plot_ci, 
        aes(x = estimate,
            y = sim_id,
@@ -1018,7 +1023,8 @@ teacher_evals_clean |>
 rate_my_prof <- teacher_evals_clean |>
   filter(seniority == 1) |>
   group_by(teacher_id) |>
-  summarize(accross(c(avg_course_fail, SET_score_avg, course_id), mean, na.rm=TRUE))
+  summarize(accross(c(avg_course_fail, SET_score_avg, course_id), 
+                    mean, na.rm = TRUE))
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -1069,24 +1075,7 @@ teacher_evals_clean |>
 
 ```{r}
 #| label: dvs-6-ex-1
-# Lab 4, Question 5
-# Comments: I would recommend using the %in% operator instead of the or!
-# Notice that your table still has a grouping variable! 
-# Because you grouped by **two** variables, your first group was not dropped!
-# Can you give your column names better titles, 
-# so the reader knows what "2008" and "2018" represent? 
-# What are the values stored in these columns?
 
-#Revision: added an income_ prefix to add data context
-
-ca_childcare |> 
-  filter(study_year %in% c(2008,2018)) |>
-  group_by(region, study_year) |>
-  summarize(median_household_income = median(mhi_2018), .groups = "drop")  |> 
-  pivot_wider(names_from = study_year, 
-              values_from = median_household_income,
-              names_prefix = "income_")|>
-  arrange(desc(2018))
 ```
 
 -   I can modify the text in my table to be more readable (e.g., bold face for column headers)
@@ -1100,24 +1089,7 @@ ca_childcare |>
 
 ```{r}
 #| label: dvs-6-ex-3
-# Lab 4, Question 5
-# Comments: I would recommend using the %in% operator instead of the or!
-# Notice that your table still has a grouping variable! 
-# Because you grouped by **two** variables, your first group was not dropped!
-# Can you give your column names better titles, 
-# so the reader knows what "2008" and "2018" represent? 
-# What are the values stored in these columns?
 
-#Revision: added an income_ prefix to add data context
-
-ca_childcare |> 
-  filter(study_year %in% c(2008,2018)) |>
-  group_by(region, study_year) |>
-  summarize(median_household_income = median(mhi_2018), .groups = "drop")  |> 
-  pivot_wider(names_from = study_year, 
-              values_from = median_household_income,
-              names_prefix = "income_")|>
-  arrange(desc(2018))
 ```
 
 **DVS-7: I show creativity in my tables.**
@@ -1126,13 +1098,74 @@ ca_childcare |>
 
 ```{r}
 #| label: dvs-7-ex-1
-
+# Lab 9, Question 8
+fish |>
+  map_int(.f = ~ sum(is.na(.x))) |>
+  enframe(name = "Variable", 
+          value = "NumberMissing") |>
+  gt() |>
+  cols_label(Variable = "Measurement Variable",
+            NumberMissing = "Missing Values") |>
+  tab_header(title = md("**Number of Missing Values for Fish Measurements**"),
+             subtitle = "Data Collected from 1989 to 2006 on the Blackfoot Fish River in Montana") |>
+  tab_style(style = cell_text(weight = "bold", 
+                              align = "center"),  
+            locations = cells_column_labels(everything())) |>
+  data_color(rows = NumberMissing == 0,
+             method = "numeric",
+             palette = "mediumaquamarine") |>
+  data_color(rows = NumberMissing > 0,
+             method = "numeric",
+             palette = "firebrick2") 
 ```
 
 -   I can modify the layout of my table to be more readable (e.g., `pivot_longer()` or `pivot_wider()`)
 
 ```{r}
 #| label: dvs-7-ex-2
+# Lab 9, Question 6
+evals |>
+  distinct(teacher_id, .keep_all = TRUE) |>
+  select(academic_degree, seniority, sex) |>
+  
+  map_if(.p = is.character,
+         .f = as.factor) |> 
+  bind_cols() |>
+  
+  mutate(seniority = case_when(seniority <= 4 ~ "Junior",
+			                           seniority >= 5 & seniority <=8 ~ "Senior",
+			                           seniority > 8 ~ "Very Senior"),
+        academic_degree = fct_recode(academic_degree,
+                                      "No Degree" = "no_dgr",
+                                      "Masters" = "ma",
+                                      "Doctorate" = "dr",
+                                      "Tenured Professor" = "prof"),
+        sex = fct_recode(sex, 
+                         "Female" = "female",
+                         "Male" = "male")) |>
+  
+  pivot_longer(cols = c("academic_degree", "seniority", "sex"),
+               names_to = "variable",
+               values_to = "level") |>
+    mutate(variable = fct_recode(variable,
+                                 "Academic Degree" = "academic_degree",
+                                 "Seniority" = "seniority",
+                                 "Sex" = "sex")) |>
+  count(variable, level) |>
+  group_by(variable) |>
+  mutate(prop = n/sum(n)) |>
+  ungroup() |>
+  
+  gt(groupname_col = "variable", 
+     rowname_col = "level") |>
+  tab_style(style = cell_text(weight = "bold"),  
+            locations = cells_row_groups())|>
+  tab_style(style = cell_text(weight = "bold"),  
+            locations = cells_title(groups = "title")) |>
+  tab_header(title = "Demographics of Professors at the University of Poland, Warsaw in 2020") |>
+  cols_label(n = "Count",
+             prop = "Percent") |>
+  fmt_percent(columns = prop, decimals = 1) 
 
 ```
 
@@ -1161,14 +1194,23 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-1-across
-
+# Lab 8, Question 1
+rescale_column <- function(df, cols) {
+  df |>
+    mutate(across({{cols}}, ~ rescale_01(.x)))
+  }
 ```
 
 -   using functions from the `map()` family
 
 ```{r}
 #| label: pe-1-map-1
-
+surveys |> 
+  map_chr(.f = ~ class(.x)) |> 
+  enframe(name = "Variable",
+          value = "Data Type") |>
+  kable(col.names = c("Variable", "Data Type")) |>
+  kable_minimal()
 ```
 
 **PE-2: I can write functions to reduce repetition in my code.**
@@ -1177,21 +1219,47 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-2-1
-
+# Lab 7, Question 4
+rescale_01 <- function(x) {
+  
+  if(!is.numeric(x)) {
+    stop("Please provide a numeric input for the x argument.") }
+  if(length(x) <= 1) {
+     stop("Please provide an input vector length greater than 1.") }
+  rng <- range(x, na.rm = TRUE)
+         (x - rng[1]) / (rng[2] - rng[1]) 
+  }
 ```
 
 -   Example 2: Function that operates on data frames
 
 ```{r}
 #| label: pe-2-2
-
+# Lab 8, Question 1
+rescale_column <- function(df, cols) {
+  df |>
+    mutate(across({{cols}}, ~ rescale_01(.x)))
+  }
 ```
 
 -   Example 3: Function that operates on vectors *or* data frames
 
 ```{r}
 #| label: pe-2-3
-
+# Lab 8, Question 3
+penguins_plot <- function(df, x_var, y_var, fill_var) {
+  
+  label <- rlang::englue("A bar plot showing number of {{y_var}} on each {{x_var}}")
+  
+  df |>
+    ggplot(aes(x = {{x_var}},
+               fill = {{y_var}})) +
+    geom_bar() +
+    labs(title = label,
+         x = str_to_title(as_label(ensym(x_var))),
+         y = "Count",
+         fill = str_to_title(as_label(ensym(y_var))))
+  }
 ```
 
 **PE-3: I can use iteration to reduce repetition in my code.**
@@ -1200,31 +1268,21 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-3-across
-# Lab 3, Question 5
-# Revision: Since as.character is applied to two different columns, 
-# I combined them into mutate() and used the across() function so 
-# they're all in one line of code, making it look neater
-
-teacher_evals_clean <- teacher_evals |>
-  rename(sex = gender) |>
-  filter(no_participants > 10) |>
-  mutate(across(c(teacher_id, course_id), as.character)) |>
-  select(course_id, 
-         teacher_id, 
-         question_no, 
-         no_participants, 
-         resp_share, 
-         SET_score_avg, 
-         percent_failed_cur, 
-         academic_degree, 
-         seniority, 
-         sex)
+# Lab 7, Question 1
+missing_values <- fish |>
+  summarize(across(.cols = everything(), 
+                   .fns = ~ sum(is.na(.x)))) 
+missing_values
 ```
 
 -   using a `map()` function with **one** input (e.g., `map()`, `map_chr()`, `map_dbl()`, etc.)
 
 ```{r}
 #| label: pe-3-map-1
+# Lab 10, Question 1
+set.seed(3)
+results <- map_int(.x = 1:10000,
+                   .f = randomBabies)
 
 ```
 
@@ -1232,7 +1290,13 @@ teacher_evals_clean <- teacher_evals |>
 
 ```{r}
 #| label: pe-3-map-2
-
+# Lab 9, Question 2
+surveys |> 
+  map_chr(.f = ~ class(.x)) |> 
+  enframe(name = "Variable",
+          value = "Data Type") |>
+  kable(col.names = c("Variable", "Data Type")) |>
+  kable_minimal()
 ```
 
 **PE-4: I can use modern tools when carrying out my analysis.**
@@ -1273,17 +1337,8 @@ ca_childcare |>
                                 "Infant",
                                 "Toddler",
                                 "Preschool"),
-         region = fct_relevel(region,
-           "San Francisco Bay Area",
-           "Orange County",
-           "Los Angeles County",
-           "Northern San Joaquin Valley",
-           "Central Coast",
-           "Inland Empire",
-           "Superior California",
-           "Southern San Joaquin Valley",
-           "San Diego–Imperial",
-           "North Coast")) |>
+         region = fct_reorder2(region, study_year, median_price)) |>
+  
   ggplot(mapping = aes(x = study_year,
                        y = median_price,
                        color = region)) +
@@ -1319,14 +1374,47 @@ ca_childcare |>
 
 ```{r}
 #| label: dsm-1-1
+# Lab 10, Question 1 
+randomBabies <- function(n = 4) {
+  baby_data <- tibble(baby = 1:n, 
+                      family = sample(1:n, replace = FALSE))
 
+double_baby <- baby_data |>
+  filter (baby == family ) |>
+  nrow() 
+
+return(double_baby)
+
+}
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dsm-1-2
+# Lab 10, Question 8
+mycifun <- function(beta0, beta1, n) {
 
+x <- runif(n, min = 0, max = 1)
+ep <- rnorm(n, mean = 0, sd = 1)
+y = beta0 + beta1*x + ep
+
+observed_data <- data.frame(x, y)
+
+lm_regression <- lm(y ~ x, data = observed_data)
+
+tidy_df <- tidy(lm_regression,
+                 conf.int = TRUE, 
+                 conf.level = 0.95)
+
+tidy_df <- tidy_df |>
+  filter(term == "x") |>
+  mutate(cover = ifelse(conf.low <= beta1 & conf.high >= beta1, 1, 0)) |>
+  select(term, estimate, conf.low, conf.high, cover)
+
+return(tidy_df)
+
+}
 ```
 
 **DSSM-2: I can conduct common statistical analyses in R.**
@@ -1352,7 +1440,10 @@ summary(reg_mod1)
 
 ```{r}
 #| label: dsm-2-3
-
+# Lab 2, Question 17 (ANOVA)
+species_mod <- aov(weight ~ species, data = surveys, projections = FALSE, qr = TRUE,
+    contrasts = NULL)
+summary(species_mod) 
 ```
 
 ## Revising My Thinking
