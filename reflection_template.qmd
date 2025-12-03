@@ -12,9 +12,7 @@ execute:
 
 [**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a B- .
 
-[**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
-
-## Working with Data
+[**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).Working with Data
 
 **WD-1: I can import data from a *variety* of formats (e.g., csv, xlsx, txt, etc.).**
 
@@ -212,10 +210,21 @@ teacher_evals_compare <- teacher_evals |>
 
 ```{r}
 #| label: wd-4-numeric-ex-2
-# Challenge 7, Question 3
-fish <- fish |>
-  mutate(length_cm = replace_values_outside_bounds(length_cm, 5, 80),
-         weight = replace_values_outside_bounds(weight, 10, 4000))
+# Lab 5
+potential_suspect <- person |>
+  left_join(drivers_license, join_by(license_id == id)) |>
+  left_join(income, join_by("ssn")) |>
+  left_join(facebook_event_checkin, join_by(id == person_id)) |>
+  mutate(attend_date = ymd(date)) |>
+  filter(event_name == "SQL Symphony Concert",
+         month (attend_date) == 12,
+         year(attend_date) == 2017,
+         height %in% 65:67,
+         hair_color == "red",
+         car_make == "Tesla",
+         car_model == "Model S") |>
+  distinct(name, .keep_all = TRUE) |>
+  select(name, id, hair_color, height, gender, car_make, car_model, annual_income, event_name, attend_date) 
 
 ```
 
@@ -448,16 +457,16 @@ plot_ca_childcare <- ca_childcare |>
 # so the reader knows what "2008" and "2018" represent? 
 # What are the values stored in these columns?
 
-#Revision: added an income_ prefix to add data context
+#Revision: added an median_income_ prefix to add data context
 
 ca_childcare |> 
   filter(study_year %in% c(2008,2018)) |>
   group_by(region, study_year) |>
-  summarize(median_household_income = median(mhi_2018), .groups = "drop")  |> 
+  summarize(median_household_income = median(mhi_2018), .groups = "drop") |> 
+  arrange(desc(study_year)) |>
   pivot_wider(names_from = study_year, 
               values_from = median_household_income,
-              names_prefix = "income_")|>
-  arrange(desc(2018))
+              names_prefix = "median_income_")
 ```
 
 ## Reproducibility
@@ -483,14 +492,14 @@ ggplot(data = fish,
        mapping = aes(x = factor(year), 
                      y = condition_index, 
                      fill = species)) +
-  geom_col(na.rm = TRUE)+
+  geom_col(na.rm = TRUE) +
   facet_wrap(~ species,
              scales = "free_y") +
   scale_fill_viridis(discrete = T, option = "plasma") +
   labs(title = "Fish Condition Index Over Time by Species",
        x = "Year",
        y = "Condition Index") +
-  theme_bw()+
+  theme_bw() +
   theme(plot.title = element_text(size = 15, 
                                   face = "bold", 
                                   hjust = 0.5),
@@ -516,10 +525,10 @@ ggplot(data = fish,
 ca_childcare |> 
   filter(study_year %in% c(2008,2018)) |>
   group_by(region, study_year) |>
-  summarize(median_household_income = median(mhi_2018), .groups = "drop")  |> 
+  summarize(median_household_income = median(mhi_2018), .groups = "drop") |> 
   pivot_wider(names_from = study_year, 
               values_from = median_household_income,
-              names_prefix = "income_")|>
+              names_prefix = "income_") |>
   arrange(desc(2018))
 ```
 
@@ -632,7 +641,6 @@ ggplot(data = fish,
 ```{r}
 #| label: dvs-2-cat
 #Challenge 3, Question 2
-
 ggplot(data = teacher_evals_compare, 
        mapping = aes(x = sen_level, 
                      fill = SET_level)) +
@@ -640,15 +648,12 @@ ggplot(data = teacher_evals_compare,
            position = "fill") +
   scale_y_continuous(labels = scales::percent) +
   scale_fill_manual(values = c("standard" = "#ab834a", "excellent" = "#a880ca")) +
-  labs(
-    title = "Evaluation of Teachers’ Use of Activities",
-    x = "Years of Experience",
-    y = "",
-    fill = "Evaluation Rating"
-  ) +
+  labs(title = "Evaluation of Teachers’ Use of Activities",
+       x = "Years of Experience",
+       y = "",
+       fill = "Evaluation Rating") +
   theme_bw() +
   theme(legend.position = "top")
-
 
 ```
 
@@ -819,7 +824,10 @@ plot_ca_childcare|>
 # Having two lines is not less efficient and is more readable.
 
 # Revision: Instead of nesting everything, I separted them so the code is
-# easier to read and interpret
+# easier to read and interpret 
+
+# Final Revision: adjusted previous code for "region" to use the fct_reorder()
+# function, as opposed to doing it manually 
 
 plot_ca_childcare <- ca_childcare |>
   select(region, study_year, mc_infant, mc_toddler, mc_preschool) |>
@@ -843,14 +851,14 @@ plot_ca_childcare|>
   ggplot(mapping = aes(x = study_year,
                        y = median_price,
                        color = region)) +
-  geom_point(size = .5)+
+  geom_point(size = .5) +
   geom_smooth(method = "loess", 
               se = TRUE, 
               linewidth = 0.6,
-              alpha = 0.4)+
-  scale_color_manual(values = colors)+
-  facet_wrap(~ age_group)+
-  scale_x_continuous(breaks = seq(2008,2018, by = 2))+
+              alpha = 0.4) +
+  scale_color_manual(values = colors) +
+  facet_wrap(~ age_group) +
+  scale_x_continuous(breaks = seq(2008,2018, by = 2)) +
   scale_y_continuous(limits = c(100,500))+
   labs(title = "Weekly Median Price for Center-Based Childcare ($)",
        x = "Study Year",
@@ -1024,7 +1032,15 @@ teacher_evals_clean |>
 
 ```{r}
 #| label: dvs-4-across
-
+# Lab 3, Question 11
+# Modified: Used previous info from the data to incorporate across() 
+# and calcualte numerical summaries
+# Thus, this would take the mean across of all variables 
+rate_my_prof <- teacher_evals_clean |>
+  filter(seniority == 1) |>
+  group_by(teacher_id) |>
+  summarize(accross(c(avg_course_fail, SET_score_avg, course_id), 
+                    ~ mean(.x, na.rm = TRUE)))
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
