@@ -556,6 +556,7 @@ return(double_baby)
 ```{r}
 #| label: r-3-example
 # Lab 3, Question 11
+
 # Comment: Do you need to save an object here? 
 # All I want is to see the output...
 
@@ -594,7 +595,9 @@ rescale_01 <- function(x) {
 ```{r}
 #| label: dvs-1-num
 # Lab 4, Question 8 
+
 # Comment: Wouldn’t it be nice to add $ signs to the y-axis too???
+
 ggplot(ca_childcare, 
        mapping = aes(x = mhi_2018, 
                      y = mc_infant)) +
@@ -603,8 +606,8 @@ ggplot(ca_childcare,
   labs(x = "Median Household Income", 
        y = "Median Weekly Pricing ($)",
        title = "Relationship Between Median Income and Infant Childcare Costs") +
-  scale_x_continuous(labels = label_currency(prefix="$")) +
-  scale_y_continuous(labels = label_currency(prefix="$")) +
+  scale_x_continuous(labels = label_currency(prefix ="$")) +
+  scale_y_continuous(labels = label_currency(prefix ="$")) +
   theme_bw()
 ```
 
@@ -666,14 +669,14 @@ plot_ca_childcare|>
   ggplot(mapping = aes(x = study_year,
                        y = median_price,
                        color = region)) +
-  geom_point(size = .5)+
+  geom_point(size = .5) +
   geom_smooth(method = "loess", 
               se = TRUE, 
               linewidth = 0.6,
-              alpha = 0.4)+
-  scale_color_manual(values = colors)+
-  facet_wrap(~ age_group)+
-  scale_x_continuous(breaks = seq(2008,2018, by = 2))+
+              alpha = 0.4) +
+  scale_color_manual(values = colors) +
+  facet_wrap(~ age_group) +
+  scale_x_continuous(breaks = seq(2008,2018, by = 2)) +
   scale_y_continuous(limits = c(100,500))+
   labs(title = "Weekly Median Price for Center-Based Childcare ($)",
        x = "Study Year",
@@ -688,6 +691,7 @@ plot_ca_childcare|>
 ```{r}
 #| label: dvs-2-ex-1
 # Lab 4, Question 7
+
 # Comments: Nice work reordering the facets, but we learned new tools this week that we can use instead. 
 # Specifically, the forcats package has some functions to handle this!
 # Can you reorder the colors in the legend so they appear in the same order as the lines in the plot? 
@@ -702,28 +706,27 @@ plot_ca_childcare|>
   ggplot(mapping = aes(x = study_year,
                        y = median_price,
                        color = region)) +
-  geom_point(size = .5)+
+  geom_point(size = .5) +
   geom_smooth(method = "loess", 
               se = TRUE, 
               linewidth = 0.6,
-              alpha = 0.4)+
-  scale_color_manual(values = colors)+
-  facet_wrap(~ age_group)+
-  scale_x_continuous(breaks = seq(2008,2018, by = 2))+
-  scale_y_continuous(limits = c(100,500))+
+              alpha = 0.4) +
+  scale_color_manual(values = colors) +
+  facet_wrap(~ age_group) +
+  scale_x_continuous(breaks = seq(2008,2018, by = 2)) +
+  scale_y_continuous(limits = c(100,500)) +
   labs(title = "Weekly Median Price for Center-Based Childcare ($)",
        x = "Study Year",
        y = NULL,
-       color = "California Region")+
-  theme_bw()+
+       color = "California Region") +
+  theme_bw() +
   theme(aspect.ratio = 1,
         axis.text.x = element_text(size = 5),
         axis.text.y = element_text(size = 6),
         axis.title.x = element_text(vjust = .4),
         legend.key.size = unit(.35, units="cm"),
         legend.title = element_text(size = 9),
-        legend.text = element_text(size = 8)
-        )
+        legend.text = element_text(size = 8))
 ```
 
 -   I can modify my colors to be accessible to anyone's eyes
@@ -731,6 +734,7 @@ plot_ca_childcare|>
 ```{r}
 #| label: dvs-2-ex-2
 # Lab 2 Challenge, Medium
+
 # I'd encourage using R packages to access color palettes for groups larger than four, 
 # since it gets hard to create colors that are easily differentiable. Plus, it is less work. :)
 
@@ -744,11 +748,9 @@ ggplot(data = surveys,
   geom_jitter(alpha = .5, size = .3) + 
   geom_boxplot(outliers = FALSE) + 
   scale_color_viridis_d(option = "cividis") + 
-  labs(
-    x = "Animal Species", 
+  labs(x = "Animal Species", 
     y = "Weight (g)", 
-    title = "Distribution of Weight Across Animal Species"
-  ) + 
+    title = "Distribution of Weight Across Animal Species") + 
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         plot.title = element_text(size = rel(1.4)))
@@ -759,7 +761,8 @@ ggplot(data = surveys,
 ```{r}
 #| label: dvs-2-ex-3
 # Lab 4, Question 8
-# Wouldn’t it be nice to add $ signs to the y-axis too???
+
+# Comment: Wouldn’t it be nice to add $ signs to the y-axis too???
 
 ggplot(ca_childcare, 
        mapping = aes(x = mhi_2018, 
@@ -780,6 +783,7 @@ ggplot(ca_childcare,
 ```{r}
 #| label: dvs-2-ex-4
 # Lab 4, Question 7
+
 # Comment: Nice work changing the size of the x-axis text! 
 # Can you make this change to other aspects of the plot?
 
@@ -819,6 +823,7 @@ plot_ca_childcare|>
 ```{r}
 #| label: dvs-2-ex-5
 # Lab 4, Question 7
+
 # Comment (from slides): I strongly recommend against nested functions, 
 # as they are difficult for people to understand what your code is doing. 
 # Having two lines is not less efficient and is more readable.
@@ -826,8 +831,8 @@ plot_ca_childcare|>
 # Revision: Instead of nesting everything, I separted them so the code is
 # easier to read and interpret 
 
-# Final Revision: adjusted previous code for "region" to use the fct_reorder()
-# function, as opposed to doing it manually 
+# Final Revision: adjusted previous code for "region" using fct_reorder2()
+# function, as opposed to reordering legend manually 
 
 plot_ca_childcare <- ca_childcare |>
   select(region, study_year, mc_infant, mc_toddler, mc_preschool) |>
@@ -859,12 +864,12 @@ plot_ca_childcare|>
   scale_color_manual(values = colors) +
   facet_wrap(~ age_group) +
   scale_x_continuous(breaks = seq(2008,2018, by = 2)) +
-  scale_y_continuous(limits = c(100,500))+
+  scale_y_continuous(limits = c(100,500)) +
   labs(title = "Weekly Median Price for Center-Based Childcare ($)",
        x = "Study Year",
        y = NULL,
-       color = "California Region")+
-  theme_bw()+
+       color = "California Region") +
+  theme_bw() +
   theme(aspect.ratio = 1,
         axis.text.x = element_text(size = 5),
         axis.text.y = element_text(size = 6),
@@ -882,6 +887,7 @@ plot_ca_childcare|>
 ```{r}
 #| label: dvs-3-1-ex-1
 # Lab 3 Challenge
+
 # Comment: I would encourage you to push yourself a bit more and try 
 # and recreate more of my plot. 
 # Can you match my colors? The percentage labels?
@@ -895,12 +901,10 @@ ggplot(data = teacher_evals_compare,
            position = "fill") +
   scale_y_continuous(labels = label_percent()) +
   scale_fill_manual(values = c("standard" = "#ab834a", "excellent" = "#a880ca")) +
-  labs(
-    title = "Evaluation of Teachers’ Use of Activities",
-    x = "Years of Experience",
-    y = "",
-    fill = "Evaluation Rating"
-  ) +
+  labs(title = "Evaluation of Teachers’ Use of Activities",
+       x = "Years of Experience",
+       y = "",
+       fill = "Evaluation Rating") +
   theme_bw() +
   theme(legend.position = "top")
 
@@ -911,6 +915,7 @@ ggplot(data = teacher_evals_compare,
 ```{r}
 #| label: dvs-3-1-ex-2
 # Lab 4, Question 7
+
 # Comment: Can you match my colors??? These are coming from a package and 
 # you will need to expand the color palette to get all 10 colors.
 
@@ -942,7 +947,8 @@ plot_ca_childcare|>
 
 ```{r}
 #| label: dvs-3-2
-# Lab 2 Challenge, Analysis Question 2
+# Lab 4 Challenge, Analysis Question 2
+
 # Revision: Originally did not have geom_text or currency label
 # Added them to provide additional information and create a better visual 
 
@@ -953,7 +959,8 @@ ggplot(data = county_data_summary,
                      y = mean_cost,
                      fill = county_name)) +
       geom_col() +
-      geom_text(aes(label = round(mean_cost), y = mean_cost + 10),
+      geom_text(aes(label = round(mean_cost), 
+                    y = mean_cost + 10),
                 position = position_dodge(0.9),
                 size = 1.7,
                 vjust = 0.5,
@@ -978,7 +985,7 @@ ggplot(plot_ci,
        aes(x = estimate,
            y = sim_id,
            color = factor(cover))) +
-  theme_minimal()+
+  theme_minimal() +
   geom_point(aes(x = conf.low), size = .5) +
   geom_point(aes(x = conf.high), size = .5) +
   geom_segment(aes(x = conf.low, 
@@ -1017,6 +1024,7 @@ ggplot(plot_ci,
 ```{r}
 #| label: dvs-4-summarize
 # Lab 3, Question 10
+
 # Comment: You should only call the filter() function once!
 
 teacher_evals_clean |>
@@ -1026,6 +1034,7 @@ teacher_evals_clean |>
             average_rating = mean(SET_score_avg, na.rm = TRUE)) |>
   filter(courses_reviewed >= 5,
          average_rating == max(average_rating) | average_rating == min(average_rating))
+
 ```
 
 -   Example using `across()`
@@ -1033,14 +1042,18 @@ teacher_evals_clean |>
 ```{r}
 #| label: dvs-4-across
 # Lab 3, Question 11
+
 # Modified: Used previous info from the data to incorporate across() 
-# and calcualte numerical summaries
-# Thus, this would take the mean across of all variables 
+# and calculate numerical summaries. This would take the mean across 
+# all variables. (idk)
+
 rate_my_prof <- teacher_evals_clean |>
   filter(seniority == 1) |>
   group_by(teacher_id) |>
-  summarize(accross(c(avg_course_fail, SET_score_avg, course_id), 
-                    ~ mean(.x, na.rm = TRUE)))
+  summarize(across(c(avg_course_fail, SET_score_avg, course_id), 
+                    ~ mean(.x, na.rm = TRUE)),
+            courses_taught = n_distinct(course_id),
+            .groups = "drop")
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -1050,6 +1063,7 @@ rate_my_prof <- teacher_evals_clean |>
 ```{r}
 #| label: dvs-5-1
 # Lab 5
+
 potential_suspect <- person |>
   left_join(drivers_license, join_by(license_id == id)) |>
   left_join(income, join_by("ssn")) |>
