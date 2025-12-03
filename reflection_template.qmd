@@ -378,11 +378,14 @@ person |>
 #| label: wd-5-inner-ex-2
 # Lab 5
 initial_suspects <- get_fit_now_member |>
-  inner_join(get_fit_now_check_in, join_by(id == membership_id)) |>  
+  inner_join(get_fit_now_check_in, 
+             by = join_by(id == membership_id)) |>  
   filter(check_in_date == "20180109", membership_status == "gold",
          str_detect(id, "48Z")) |>
-  left_join(person, by = join_by(person_id == id) ) |>  
-  left_join(drivers_license, by = join_by(license_id == id))    
+  left_join(person, 
+            by = join_by(person_id == id) ) |>  
+  left_join(drivers_license, 
+            by = join_by(license_id == id))    
 
 ```
 
@@ -393,12 +396,17 @@ initial_suspects <- get_fit_now_member |>
 ```{r}
 #| label: wd-6-semi
 # Lab 5
-# Modified Lab 5 using a semi_join to pull interviews where
-# there could be a potential match
+# Modified Lab 5 using a semi_join to pull interview of witness 
+# living at last house on Northwestern Dr
+witness <- person |>
+  filter(address_street_name == "Northwestern Dr") |>
+  slice_max(address_number, n = 1)
+
 interview |>
-  semi_join(person, 
-            by = join_by("person_id" == "id")) |>
-  filter(address_street_name =="Northwestern Dr") |>
+  semi_join(witness, 
+            by = join_by("person_id"== "id")) |>
+  pull(transcript)
+
 ```
 
 -   `anti_join()`
@@ -406,11 +414,11 @@ interview |>
 ```{r}
 #| label: wd-6-anti
 # Lab 5
-# Modified Lab 5 code to demonstate how anti_join can be
-# used to pull names of suspects that have no matching interview
-final_suspect <- interview |>
-  anti_join(potential_suspect, 
-            by = join_by("person_id" == "id")) |>
+# Modified Lab 5 code using anti_join to pull names of
+# suspects that have no matching interview
+final_suspect <- potential_suspect |>
+  anti_join(interview, 
+            by= join_by("id" == "person_id")) |>
   pull(name)
 ```
 
@@ -1016,15 +1024,7 @@ teacher_evals_clean |>
 
 ```{r}
 #| label: dvs-4-across
-# Lab 3, Question 11
-# Modified: Used previous info from the data to incorporate across() 
-# and calcualte numerical summaries
-# Thus, this would take the mean across of all variables 
-rate_my_prof <- teacher_evals_clean |>
-  filter(seniority == 1) |>
-  group_by(teacher_id) |>
-  summarize(accross(c(avg_course_fail, SET_score_avg, course_id), 
-                    mean, na.rm = TRUE))
+
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
