@@ -224,8 +224,7 @@ potential_suspect <- person |>
          car_make == "Tesla",
          car_model == "Model S") |>
   distinct(name, .keep_all = TRUE) |>
-  select(name, id, hair_color, height, gender, car_make, car_model, annual_income, event_name, attend_date) 
-
+  select(name, id, hair_color, height, gender, car_make, car_model, annual_income, event_name, attend_date)
 ```
 
 -   Factor Example 1 (renaming levels)
@@ -366,7 +365,6 @@ ca_childcare <- counties |>
   filter(state_name == "California") |>
   left_join(y = childcare_costs,
             by = join_by("county_fips_code"))
-
 ```
 
 -   `inner_join()` Example 1
@@ -395,7 +393,6 @@ initial_suspects <- get_fit_now_member |>
             by = join_by(person_id == id) ) |>  
   left_join(drivers_license, 
             by = join_by(license_id == id))    
-
 ```
 
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
@@ -415,7 +412,6 @@ interview |>
   semi_join(witness, 
             by = join_by("person_id"== "id")) |>
   pull(transcript)
-
 ```
 
 -   `anti_join()`
@@ -583,7 +579,6 @@ rescale_01 <- function(x) {
      stop("Please provide an input vector length greater than 1.") }
   rng <- range(x, na.rm = TRUE)
          (x - rng[1]) / (rng[2] - rng[1]) }
-
 ```
 
 ## Data Visualization & Summarization
@@ -636,7 +631,6 @@ ggplot(data = fish,
         strip.text = element_text(size = 12, 
                                   face = "bold"),
         legend.position = "none")
-
 ```
 
 -   At least two categorical variables
@@ -657,7 +651,6 @@ ggplot(data = teacher_evals_compare,
        fill = "Evaluation Rating") +
   theme_bw() +
   theme(legend.position = "top")
-
 ```
 
 -   Dates (time series plot)
@@ -775,7 +768,6 @@ ggplot(ca_childcare,
   scale_x_continuous(labels = label_currency(prefix="$")) +
   scale_y_continuous(labels = label_currency(prefix="$")) +
   theme_bw()
-
 ```
 
 -   I can modify the text in my plot to be more readable
@@ -877,7 +869,6 @@ plot_ca_childcare|>
         legend.key.size = unit(.35, units="cm"),
         legend.title = element_text(size = 9),
         legend.text = element_text(size = 8))
-
 ```
 
 **DVS-3: I show creativity in my visualizations**
@@ -907,7 +898,6 @@ ggplot(data = teacher_evals_compare,
        fill = "Evaluation Rating") +
   theme_bw() +
   theme(legend.position = "top")
-
 ```
 
 -   I can use non-standard colors (Example 2)
@@ -1014,7 +1004,6 @@ ggplot(plot_ci,
                      breaks = seq(-1, 2.5, by = .5))+
   scale_color_manual(values = c("red2","deepskyblue3"),
                      labels = c("0","1"))
-
 ```
 
 **DVS-4: I can calculate numerical summaries of variables.**
@@ -1034,7 +1023,6 @@ teacher_evals_clean |>
             average_rating = mean(SET_score_avg, na.rm = TRUE)) |>
   filter(courses_reviewed >= 5,
          average_rating == max(average_rating) | average_rating == min(average_rating))
-
 ```
 
 -   Example using `across()`
@@ -1142,8 +1130,6 @@ fish |>
   data_color(rows = NumberMissing > 0,
              method = "numeric",
              palette = "firebrick2") 
-  
-
 ```
 
 -   I can arrange my table to have an intuitive ordering
@@ -1193,7 +1179,6 @@ evals |>
   cols_label(n = "Count",
              prop = "Percent") |>
   fmt_percent(columns = prop, decimals = 1) 
-
 ```
 
 **DVS-7: I show creativity in my tables.**
@@ -1221,7 +1206,6 @@ fish |>
   data_color(rows = NumberMissing > 0,
              method = "numeric",
              palette = "firebrick2") 
-
 ```
 
 -   I can modify the layout of my table to be more readable (e.g., `pivot_longer()` or `pivot_wider()`)
@@ -1271,7 +1255,6 @@ evals |>
   cols_label(n = "Count",
              prop = "Percent") |>
   fmt_percent(columns = prop, decimals = 1) 
-
 ```
 
 ## Program Efficiency
@@ -1293,7 +1276,6 @@ teacher_evals_clean <- teacher_evals |>
   filter(no_participants > 10) |>
   mutate(across(c(teacher_id, course_id), as.character)) |>
   select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
-
 ```
 
 -   using `across()`
@@ -1311,6 +1293,8 @@ rescale_column <- function(df, cols) {
 
 ```{r}
 #| label: pe-1-map-1
+# Lab 10, Question 2
+
 surveys |> 
   map_chr(.f = ~ class(.x)) |> 
   enframe(name = "Variable",
@@ -1389,7 +1373,6 @@ missing_values
 set.seed(3)
 results <- map_int(.x = 1:10000,
                    .f = randomBabies)
-
 ```
 
 -   using a `map()` function with **more than one** input (e.g., `map_2()` or `pmap()`)
@@ -1412,6 +1395,7 @@ surveys |>
 ```{r}
 #| label: pe-4-1
 # Lab 3, Question 8
+
 # Comment: I would love to see you using named argments!
 
 # Revision: Went back to slides for Lab 3 and modified the code 
@@ -1427,6 +1411,7 @@ filter(if_any(.cols = everything(),
 ```{r}
 #| label: pe-4-2
 # Lab 4, Question 7
+
 # Revision: Compiled all code into one pipline, ensuring the use 
 # of modern tools and previous modifications
 
@@ -1443,7 +1428,7 @@ ca_childcare |>
                                 "Infant",
                                 "Toddler",
                                 "Preschool"),
-         region = fct_reorder2(region, study_year, median_price)) |>
+         region = fct_reorder2(region, study_year, median_price))
   
   ggplot(mapping = aes(x = study_year,
                        y = median_price,
