@@ -1186,7 +1186,7 @@ evals |>
   gt(groupname_col = "variable", 
      rowname_col = "level") |>
   tab_style(style = cell_text(weight = "bold"),  
-            locations = cells_row_groups())|>
+            locations = cells_row_groups()) |>
   tab_style(style = cell_text(weight = "bold"),  
             locations = cells_title(groups = "title")) |>
   tab_header(title = "Demographics of Professors at the University of Poland, Warsaw in 2020") |>
@@ -1283,6 +1283,7 @@ evals |>
 ```{r}
 #| label: pe-1-one-call
 # Lab 3, Question 5
+
 # Revision: Since as.character is applied to two different columns, 
 # I combined them into mutate() and used the across() function so 
 # they're all in one line of code, making it look neater
