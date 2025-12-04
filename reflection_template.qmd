@@ -582,7 +582,6 @@ rescale_01 <- function(x) {
 -   At least two numeric variables
 
 ```{r}
-#| label: dvs-1-num
 # Lab 4, Question 8 
 
 # Comment: Wouldn’t it be nice to add $ signs to the y-axis too???
@@ -1272,8 +1271,7 @@ rescale_column <- function(df, cols) {
 
 ```{r}
 #| label: pe-1-map-1
-# Lab 10, Question 2
-
+# Lab 9, Question 2
 surveys |> 
   map_chr(.f = ~ class(.x)) |> 
   enframe(name = "Variable",
@@ -1337,11 +1335,9 @@ penguins_plot <- function(df, x_var, y_var, fill_var) {
 
 ```{r}
 #| label: pe-3-across
-# Lab 7, Question 1
-missing_values <- fish |>
-  summarize(across(.cols = everything(), 
-                   .fns = ~ sum(is.na(.x)))) 
-missing_values
+# Lab 3, Question 8
+teacher_evals_clean |>
+filter(if_any(everything(), ~ is.na(.)))
 ```
 
 -   using a `map()` function with **one** input (e.g., `map()`, `map_chr()`, `map_dbl()`, etc.)
@@ -1358,13 +1354,15 @@ results <- map_int(.x = 1:10000,
 
 ```{r}
 #| label: pe-3-map-2
-# Lab 9, Question 2
-surveys |> 
-  map_chr(.f = ~ class(.x)) |> 
-  enframe(name = "Variable",
-          value = "Data Type") |>
-  kable(col.names = c("Variable", "Data Type")) |>
-  kable_minimal()
+# Lab 9, Question 7
+fish |>
+  map_int(.f = ~ sum(is.na(.x))) |>
+  enframe(name = "Variable", 
+          value = "Number Missing") |>
+  kable(caption = "Number of Missing Values in Fish Dataset",
+        col.names = c("Variable", "Missing Values")) |>
+  kable_styling(full_width = FALSE,
+                bootstrap_options = c("striped", "hover"))
 ```
 
 **PE-4: I can use modern tools when carrying out my analysis.**
