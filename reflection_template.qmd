@@ -210,21 +210,9 @@ teacher_evals_compare <- teacher_evals |>
 
 ```{r}
 #| label: wd-4-numeric-ex-2
-# Lab 5
-potential_suspect <- person |>
-  left_join(drivers_license, join_by(license_id == id)) |>
-  left_join(income, join_by("ssn")) |>
-  left_join(facebook_event_checkin, join_by(id == person_id)) |>
-  mutate(attend_date = ymd(date)) |>
-  filter(event_name == "SQL Symphony Concert",
-         month (attend_date) == 12,
-         year(attend_date) == 2017,
-         height %in% 65:67,
-         hair_color == "red",
-         car_make == "Tesla",
-         car_model == "Model S") |>
-  distinct(name, .keep_all = TRUE) |>
-  select(name, id, hair_color, height, gender, car_make, car_model, annual_income, event_name, attend_date)
+# Challenge 7, Question 1
+fish <- fish |> 
+  mutate(length_cm = length / 10)
 ```
 
 -   Factor Example 1 (renaming levels)
@@ -288,20 +276,21 @@ plot_ca_childcare <- ca_childcare |>
 
 ```{r}
 #| label: wd-4-string
-# #Lab 4, Question 4
-ca_childcare <- ca_childcare |> 
-  mutate(county_name = str_remove(county_name, " County")) |>
-  mutate(region = fct_collapse(county_name,
-      "Superior California" = superior_counties,
-      "North Coast" = north_coast_counties,
-      "San Francisco Bay Area" = san_fran_counties,
-      "Northern San Joaquin Valley" = n_san_joaquin_counties,
-      "Central Coast" = central_coast_counties,
-      "Southern San Joaquin Valley" = s_san_joaquin_counties,
-      "Inland Empire" = inland_counties,
-      "Los Angeles County" = la_county,
-      "Orange County" = orange_county,
-      "San Diego–Imperial" = san_diego_imperial_counties)) 
+# #Lab 8, Question 3
+penguins_plot <- function(df, x_var, y_var, fill_var) {
+
+label <- rlang::englue("A bar plot showing number of {{y_var}} on each {{x_var}}")
+  
+  df |>
+    ggplot(aes(x = {{x_var}},
+               fill = {{y_var}})) +
+    geom_bar() +
+    labs(title = label,
+         x = str_to_title(as_label(ensym(x_var))),
+         y = "Count",
+         fill = str_to_title(as_label(ensym(y_var)))
+         )
+}
 ```
 
 -   Date (example must use functions from **lubridate**)
@@ -402,8 +391,10 @@ initial_suspects <- get_fit_now_member |>
 ```{r}
 #| label: wd-6-semi
 # Lab 5
+
 # Modified Lab 5 using a semi_join to pull interview of witness 
 # living at last house on Northwestern Dr
+
 witness <- person |>
   filter(address_street_name == "Northwestern Dr") |>
   slice_max(address_number, n = 1)
@@ -419,8 +410,10 @@ interview |>
 ```{r}
 #| label: wd-6-anti
 # Lab 5
+
 # Modified Lab 5 code using anti_join to pull names of
 # suspects that have no matching interview
+
 final_suspect <- potential_suspect |>
   anti_join(interview, 
             by= join_by("id" == "person_id")) |>
@@ -453,7 +446,8 @@ plot_ca_childcare <- ca_childcare |>
 # so the reader knows what "2008" and "2018" represent? 
 # What are the values stored in these columns?
 
-#Revision: added an median_income_ prefix to add data context
+# Revision: added an median_income_ prefix to add data context.
+# Also, moved arrange() function before applying pivot_wider()
 
 ca_childcare |> 
   filter(study_year %in% c(2008,2018)) |>
@@ -1012,36 +1006,21 @@ ggplot(plot_ci,
 
 ```{r}
 #| label: dvs-4-summarize
-# Lab 3, Question 10
-
-# Comment: You should only call the filter() function once!
-
+# Lab 3, Question 6
 teacher_evals_clean |>
-  filter(question_no == 901) |>
-  group_by(teacher_id) |>
-  summarize(courses_reviewed = n_distinct(course_id),
-            average_rating = mean(SET_score_avg, na.rm = TRUE)) |>
-  filter(courses_reviewed >= 5,
-         average_rating == max(average_rating) | average_rating == min(average_rating))
+summarize(unique_instructors = n_distinct(teacher_id),
+          unique_courses = n_distinct(course_id))
 ```
 
 -   Example using `across()`
 
 ```{r}
 #| label: dvs-4-across
-# Lab 3, Question 11
-
-# Modified: Used previous info from the data to incorporate across() 
-# and calculate numerical summaries. This would take the mean across 
-# all variables. (idk)
-
-rate_my_prof <- teacher_evals_clean |>
-  filter(seniority == 1) |>
-  group_by(teacher_id) |>
-  summarize(across(c(avg_course_fail, SET_score_avg, course_id), 
-                    ~ mean(.x, na.rm = TRUE)),
-            courses_taught = n_distinct(course_id),
-            .groups = "drop")
+# Lab 7, Question 1
+missing_values <- fish |>
+  summarize(across(.cols = everything(), 
+                   .fns = ~ sum(is.na(.x)))) 
+missing_values
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
