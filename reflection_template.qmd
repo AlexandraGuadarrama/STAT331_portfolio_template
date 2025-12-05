@@ -78,7 +78,9 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-2-ex-2
 # Lab 4 Challenge, Question 2
+
 # Modified previous code to show how to remove selected columns 
+
 county_data <- ca_childcare |> 
   filter(county_name %in% c("Los Angeles County", 
                             "Orange County", 
@@ -240,10 +242,11 @@ a_childcare <- ca_childcare |>
 ```{r}
 #| label: wd-4-factor-ex-2
 #Lab 4, Question 7
+
 # Growing comment: Nice work reordering the facets, but we learned new tools this week that we can use instead. 
 # Specifically, the forcats package has some functions to handle this!
 
-# Revision: Instead of nesting everything, I separted them so the code is
+# Revision: Instead of nesting everything, I separated them so the code is
 # easier to read and interpret
 
 plot_ca_childcare <- ca_childcare |>
@@ -322,9 +325,11 @@ potential_suspect <- person |>
 
 ```{r}
 #| label: wd-5-left-ex-1
-# Lab 4, Question 2
+# Lab 5
+
 # Portfolio revision: This would keep all potential_suspect rows 
 # and add interview data where there's a match
+
 final_suspect <- potential_suspect |>
   left_join(interview, join_by(id == person_id)) |>
   distinct(name, .keep_all = TRUE) |>
@@ -336,9 +341,11 @@ final_suspect <- potential_suspect |>
 ```{r}
 #| label: wd-5-right
 # Lab 5 
+
 # Code from the left join
 # Portfolio revision: This would keep all interview rows 
 # and add potential_suspect data where there's a match
+
 final_suspect <- potential_suspect |>
   right_join(interview, join_by(id == person_id)) |>
   distinct(name, .keep_all = TRUE) |>
@@ -439,6 +446,7 @@ plot_ca_childcare <- ca_childcare |>
 ```{r}
 #| label: wd-7-wide
 # Lab 4, Question 5
+
 # Comments: I would recommend using the %in% operator instead of the or!
 # Notice that your table still has a grouping variable! 
 # Because you grouped by **two** variables, your first group was not dropped!
@@ -505,6 +513,7 @@ ggplot(data = fish,
 ```{r}
 #| label: r-2-2
 # Lab 4, Question 5
+
 # Comments: I would recommend using the %in% operator instead of the or!
 # Notice that your table still has a grouping variable! 
 # Because you grouped by **two** variables, your first group was not dropped!
@@ -516,10 +525,10 @@ ca_childcare |>
   filter(study_year %in% c(2008,2018)) |>
   group_by(region, study_year) |>
   summarize(median_household_income = median(mhi_2018), .groups = "drop") |> 
+  arrange(desc(2018)) |>
   pivot_wider(names_from = study_year, 
               values_from = median_household_income,
-              names_prefix = "income_") |>
-  arrange(desc(2018))
+              names_prefix = "income_") 
 ```
 
 -   Example of function formatting
@@ -870,7 +879,7 @@ plot_ca_childcare|>
 
 ```{r}
 #| label: dvs-3-1-ex-1
-# Lab 3 Challenge
+# Challenge 3, Question 2
 
 # Comment: I would encourage you to push yourself a bit more and try 
 # and recreate more of my plot. 
@@ -930,7 +939,7 @@ plot_ca_childcare|>
 
 ```{r}
 #| label: dvs-3-2
-# Lab 4 Challenge, Analysis Question 2
+# Challenge 4, Analysis Question 2
 
 # Revision: Originally did not have geom_text or currency label
 # Added them to provide additional information and create a better visual 
@@ -1029,7 +1038,6 @@ missing_values
 ```{r}
 #| label: dvs-5-1
 # Lab 4, Question 5
-
 ca_childcare |> 
   filter(study_year %in% c(2008,2018)) |>
   group_by(region, study_year) |>
@@ -1516,11 +1524,11 @@ summary(species_mod)
 
 ## Revising My Thinking
 
-Throughout the course, I've revised my thinking in different ways. For example, I struggled with my YAML set up (resulting in "incomplete" submissions), but I now understand what was going on and how it's impacted the visual aspect of my documents. I've also made sure to be more mindful about my code formatting (e.g. "stay consistent and always surround your = signs with blankspaces") so the code flows better and is easier to read. In my portfolio, I've noted some changes I made based on the feedback and suggestions, whether they were marked "growing" or "success" in the lab rubric. I also made sure to comment on any additions or edits I made to my previous code in order to fit some of the criteria.
+Throughout the course, I've revised my thinking in different ways. For example, I struggled with my YAML set up (resulting in "incomplete" submissions), but I now understand what was going on and how it's impacted the visual aspect of my documents. As a result, my documents look cleaner and more professional. I've also made sure to be more mindful about my code formatting (e.g. "stay consistent and always surround your = signs with blank spaces") so the code flows better and is easy to interpret. In my midterm and final portfolio, I've noted some changes I made based on feedback, and whether they were marked "growing" or "success" in the lab rubric. I also made sure to comment on any additions or edits I made to my previous code in order to fit some of the criteria (e.g. WD-6, WD-2, PE-4).
 
 ## Extending My Thinking
 
-To extend my thinking, I almost always take what I learned from programming activities or feedback from previous labs and apply those to my future assignments. In fact, in one of my other classes this quarter, I've been using what I learned about tidy code and quarto documents in my lab work. This helps me share R code more effectively with my peers. I've also revised most of my lab assignments in order to correct any "growing" comments I received, which helps me figure out what I've done wrong and how to improve my code for the next lab assignment. Throughout the course, I've used online resources, like Google, ChatGPT, and YouTube videos to get a better understanding how certain R functions work and how they connect to each other. For example, I'll often scroll through Google to find any cheat sheets that consolidate some of the code we've learned in class, and save those to reference later. The Help tab in R studio has also been a great tool because it provides a variety of aliases and examples that I can just click through and determine which function would fit best in my assignment.
+To extend my thinking, I always take what I learn from programming activities or constructive feedback from previous labs and apply those to future assignments. In fact, in one of my other classes this quarter, I've been using what I learned about tidy code and quarto documents in my lab work. This helps me share R code more effectively with my peers in a way that's easy to view and understand. I've also revised most of my lab assignments to correct any "growing" comments I received, which helps me figure out what I've done wrong and how to improve my code for the next lab assignment. Throughout the course, I've used online resources, like Google, ChatGPT, and YouTube videos to get a better understanding how certain R functions work and how they connect to each other. For example, I'll often scroll through Google to find any cheat sheets that consolidate some of the code we've learned in class, and save those to reference later. The Help tab in R studio has also been a great tool because it provides a variety of aliases and examples that I can just click through and determine which function would fit best in my assignment.
 
 ## Peer Support & Collaboration
 
@@ -1532,4 +1540,4 @@ One thing I’d note, when loading in the libraries and data, you don’t really
 
 Also, for Question 7 (recreating the plot), I think making the font on the x-axis a bit smaller using theme(axis.text.x = element_text(size = \_ )) could help with the overlapping! Overall, you did great :)"
 
-During peer programming activities, I always tried to follow the developer and coder roles, but have broken my role a couple times. If we were ever stuck on a problem, we would look to our notes, course slides, printed cheat sheets, or raise our hands for guidance. I've become more comfortable collaborating with my peers and explaining my thought process. At the beginning, I was worried about naming the wrong code or making a mistake, but I've learned that if I do make a mistake, running the code helps me to see what I did wrong and figure out my next steps can be to improve it. This mindset change has allowed me to feel more confident entering programming activities and excited to work with my peers.
+During peer programming activities, I always tried to follow the developer and coder roles, but have broken my role a couple times. If we were ever stuck on a problem, we would look to our notes, course slides, printed cheat sheets, or raise our hands for guidance. I've become much more comfortable collaborating with my peers and explaining my thought process. At the beginning, I was worried about naming the wrong code or making a mistake, but I've learned that if I do make a mistake, running the code helps me to see what I did wrong and figure out my next steps can be to improve it. This mindset change has allowed me to feel more confident entering programming activities and excited to work with my peers.
