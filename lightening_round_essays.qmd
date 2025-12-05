@@ -16,6 +16,8 @@ editor: visual
 
 3.  What was the easiest part of the class for you? Explain why.
 
+    -   The easiest part for me was using ggplot() to create visualizations like boxplots, histograms, and bar charts. The steps felt straightforward, mistakes were easier to catch, and it allowed me to express my creativity.
+
 4.  What part of the class surprised or interested you the most? Explain why.
 
 5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
