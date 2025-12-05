@@ -388,7 +388,7 @@ initial_suspects <- get_fit_now_member |>
   left_join(person, 
             by = join_by(person_id == id) ) |>  
   left_join(drivers_license, 
-            by = join_by(license_id == id))    
+            by = join_by(license_id == id))
 ```
 
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
@@ -418,7 +418,7 @@ interview |>
 #| label: wd-6-anti
 # Lab 5
 
-# Modified Lab 5 code using anti_join to pull names of
+# Modified Lab 5 code using an anti_join to pull names of
 # suspects that have no matching interview
 
 final_suspect <- potential_suspect |>
