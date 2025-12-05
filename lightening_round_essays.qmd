@@ -23,3 +23,5 @@ editor: visual
     -   The part of the class that interested me the most were the interactive in-class activities, like the puzzle activity at the beginning of the year and using blocks to visualize how joins work. They made the learning process more fun and memorable.
 
 5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+
+    -   Don’t hesitate to ask your peers for help if you're stumped on your code! Dr. T is always available to help, but sometimes your classmates can offer some great insight and may help explain things in a way that makes the content easier to understand.
