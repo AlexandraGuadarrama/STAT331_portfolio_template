@@ -12,6 +12,8 @@ editor: visual
 
 2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
 
+    -   The most difficult part for me was learning how to implement iterations and connect them to simulations because it was tricky to see how each step of the iteration impacted the overall simulation.
+
 3.  What was the easiest part of the class for you? Explain why.
 
 4.  What part of the class surprised or interested you the most? Explain why.
