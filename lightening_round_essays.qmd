@@ -20,4 +20,6 @@ editor: visual
 
 4.  What part of the class surprised or interested you the most? Explain why.
 
+    -   The part of the class that interested me the most were the interactive in-class activities, like the puzzle activity at the beginning of the year and using blocks to visualize how joins work. They made the learning process more fun and memorable.
+
 5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
