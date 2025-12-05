@@ -156,7 +156,7 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-3-character
-# Lab 5
+# Lab 5, Find who hired the initial suspect
  filter(event_name == "SQL Symphony Concert",
          month (attend_date) == 12,
          year(attend_date) == 2017,
@@ -170,7 +170,7 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-3-string
-# Lab 5
+# Lab 5, Find interviews from two witnesses
 person |>
   inner_join(interview, join_by("id" == "person_id")) |>
   filter(address_street_name == "Franklin Ave",
@@ -183,7 +183,7 @@ person |>
 
 ```{r}
 #| label: wd-3-date
-# Lab 5
+# Lab 5, Access report from date of murder
 crime_scene_report |>
   filter(ymd(date) == ymd("2018-01-15"), 
          city == "SQL City", 
@@ -300,7 +300,7 @@ label <- rlang::englue("A bar plot showing number of {{y_var}} on each {{x_var}}
 
 ```{r}
 #| label: wd-4-date
-# Lab 5
+# Lab 5, Find who hired the initial suspect
 potential_suspect <- person |>
   left_join(drivers_license, join_by(license_id == id)) |>
   left_join(income, join_by("ssn")) |>
@@ -325,7 +325,7 @@ potential_suspect <- person |>
 
 ```{r}
 #| label: wd-5-left-ex-1
-# Lab 5
+# Lab 5, Confirm the new suspect
 
 # Portfolio revision: This would keep all potential_suspect rows 
 # and add interview data where there's a match
@@ -340,7 +340,7 @@ final_suspect <- potential_suspect |>
 
 ```{r}
 #| label: wd-5-right
-# Lab 5 
+# Lab 5, Confirm the new suspect
 
 # Code from the left join
 # Portfolio revision: This would keep all interview rows 
@@ -367,7 +367,7 @@ ca_childcare <- counties |>
 
 ```{r}
 #| label: wd-5-inner-ex-1
-# Lab 5
+# Lab 5, Find interviews from two witnesses
 person |>
   inner_join(interview, join_by("id" == "person_id")) |>
   filter(address_street_name =="Northwestern Dr") |> 
@@ -379,7 +379,7 @@ person |>
 
 ```{r}
 #| label: wd-5-inner-ex-2
-# Lab 5
+# Lab 5, Find initial suspect based on witness interviews
 initial_suspects <- get_fit_now_member |>
   inner_join(get_fit_now_check_in, 
              by = join_by(id == membership_id)) |>  
@@ -397,7 +397,7 @@ initial_suspects <- get_fit_now_member |>
 
 ```{r}
 #| label: wd-6-semi
-# Lab 5
+# Lab 5, Find interviews from two witnesses
 
 # Modified Lab 5 using a semi_join to pull interview of witness 
 # living at last house on Northwestern Dr
@@ -416,7 +416,7 @@ interview |>
 
 ```{r}
 #| label: wd-6-anti
-# Lab 5
+# Lab 5, Confirm the new suspect
 
 # Modified Lab 5 code using an anti_join to pull names of
 # suspects that have no matching interview
